@@ -31,7 +31,7 @@ static const char *party_file = "party.json";
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lib_saveeditor_logger, boost::log::trivial::logger);
 
-PathfinderKingmaker::SaveEditor::SaveFile::SaveFile() {
+Borderlands::SaveEditor::SaveFile::SaveFile() {
 
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
 
@@ -45,7 +45,7 @@ PathfinderKingmaker::SaveEditor::SaveFile::SaveFile() {
     this->save_name = std::unique_ptr<std::string>();;
 }
 
-PathfinderKingmaker::SaveEditor::SaveFile::~SaveFile() noexcept(false) {
+Borderlands::SaveEditor::SaveFile::~SaveFile() noexcept(false) {
 
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
 
@@ -67,7 +67,7 @@ PathfinderKingmaker::SaveEditor::SaveFile::~SaveFile() noexcept(false) {
     this->save_name.reset(nullptr);
 }
 
-void PathfinderKingmaker::SaveEditor::SaveFile::open(const std::string &save_file_path) noexcept(false) {
+void Borderlands::SaveEditor::SaveFile::open(const std::string &save_file_path) noexcept(false) {
 
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
     this->save_file = std::make_unique<boost::filesystem::path>(save_file_path);
@@ -507,7 +507,7 @@ void PathfinderKingmaker::SaveEditor::SaveFile::open(const std::string &save_fil
     }
 }
 
-rapidjson::Document &PathfinderKingmaker::SaveEditor::SaveFile::getPartyJson() noexcept(false) {
+rapidjson::Document &Borderlands::SaveEditor::SaveFile::getPartyJson() noexcept(false) {
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
 
     if (this->party_json) {
@@ -521,7 +521,7 @@ rapidjson::Document &PathfinderKingmaker::SaveEditor::SaveFile::getPartyJson() n
     }
 }
 
-rapidjson::Document &PathfinderKingmaker::SaveEditor::SaveFile::getPlayerJson() noexcept(false) {
+rapidjson::Document &Borderlands::SaveEditor::SaveFile::getPlayerJson() noexcept(false) {
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
 
     if (this->player_json) {
@@ -535,7 +535,7 @@ rapidjson::Document &PathfinderKingmaker::SaveEditor::SaveFile::getPlayerJson() 
     }
 }
 
-void PathfinderKingmaker::SaveEditor::SaveFile::save() noexcept(false) {
+void Borderlands::SaveEditor::SaveFile::save() noexcept(false) {
 
 
     boost::posix_time::ptime timeLocal = boost::posix_time::second_clock::local_time();
@@ -563,7 +563,7 @@ void PathfinderKingmaker::SaveEditor::SaveFile::save() noexcept(false) {
     this->save(output_path.generic_string());
 }
 
-void PathfinderKingmaker::SaveEditor::SaveFile::save(const std::string &output_file_name) noexcept(false) {
+void Borderlands::SaveEditor::SaveFile::save(const std::string &output_file_name) noexcept(false) {
     zip *zip_archive;
     zip_error_t zip_error_t;
     int zip_error_int = 0;

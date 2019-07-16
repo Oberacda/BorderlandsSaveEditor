@@ -10,7 +10,7 @@
 
 #include "ui_Saveeditor_MainWindow.h"
 
-static PathfinderKingmaker::SaveEditor::SaveFile* save;
+static Borderlands::SaveEditor::SaveFile* save;
 
 static void saveFunc() {
     save->save();
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     Ui::MainWindow ui;
     ui.setupUi(mainWindow);
 
-    save = new PathfinderKingmaker::SaveEditor::SaveFile();
+    save = new Borderlands::SaveEditor::SaveFile();
 
     /*try {
         save->open("Manual_65_Old_Sycamore___24_Gozran__IV__4710___22_19_31.zks");

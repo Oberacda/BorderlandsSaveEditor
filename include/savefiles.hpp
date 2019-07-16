@@ -14,20 +14,20 @@
 #include <boost/filesystem.hpp>
 #include <rapidjson/document.h>
 
-#include "save_editor_exports.hpp"
+#include "bl_save_editor_exports.hpp"
 
 /*!
- * @brief Namespace for PathfinderKingmaker related classes.
+ * @brief Namespace for Bordlerands related classes.
  */
-namespace PathfinderKingmaker {
+namespace Borderlands {
 
     /*!
-     * @brief Namespace for classes of the PathfinderKingmaker::SaveEditor.
+     * @brief Namespace for classes of the Borderlands::SaveEditor.
      */
     namespace SaveEditor {
 
         /*!
-         * @brief Class representing parts of a PathfinderKingmaker savefile.
+         * @brief Class representing parts of a Borderlands savefile.
          *
          * This class allows access to the player.json and party.json files from a pathfinder kingmaker savefile.
          * It allows to read and write the two files.
@@ -38,7 +38,7 @@ namespace PathfinderKingmaker {
          *
          * @date 14.03.2019
          */
-        class PATHFINDER_SAVE_EDITOR_API SaveFile {
+        class BORDERLANDS_SAVE_EDITOR_API SaveFile {
         private:
 
             /*!

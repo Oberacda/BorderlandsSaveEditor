@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0087 NEW)
 
 set(BorderlandsSaveEditor_LIB_PUBLIC_INCLUDE_FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/save_editor_exports.hpp
-        ${BorderlandsSaveEditor_INCLUDE_DIR}/library.hpp
+        ${CMAKE_CURRENT_BINARY_DIR}/bl_save_editor_exports.hpp
+#        ${BorderlandsSaveEditor_INCLUDE_DIR}/library.hpp
         ${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp
         )
 
@@ -16,7 +16,7 @@ set(BorderlandsSaveEditor_LIB_INCLUDE_FILES
         )
 
 set(BorderlandsSaveEditor_LIB_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/library.cpp
+#        ${CMAKE_CURRENT_SOURCE_DIR}/library.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/savefile.cpp
         )
 
@@ -82,9 +82,9 @@ set_target_properties(BorderlandsSaveEditor_LIB
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_PUBLIC_INCLUDE_FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/save_editor_exports.hpp
+        ${CMAKE_CURRENT_BINARY_DIR}/bl2_save_editor_exports.hpp
         ${BorderlandsSaveEditor_INCLUDE_DIR}/library.hpp
-        ${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp
+        #${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES)
@@ -96,7 +96,7 @@ set(BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_FILES
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/library.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/savefile.cpp
+        #${CMAKE_CURRENT_SOURCE_DIR}/savefile.cpp
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_RESOURCE_FILES)
@@ -281,3 +281,17 @@ install(TARGETS BorderlandsSaveEditor_EXE
         DESTINATION .
         COMPONENT Runtime
         )
+
+if(WIN32)
+    install(CODE 
+        "include(BundleUtilities)\n
+        fixup_bundle(\"$<TARGET_FILE:BorderlandsSaveEditor_EXE>\" \"\" \"${ZLIB_LIBRARY_DIR}/../bin;${LIBZIP_LIBRARY_DIR}/../bin;${Boost_LIBRARY_DIRS}\")"
+        COMPONENT Runtime
+        )
+
+    install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        DESTINATION .
+        FILES_MATCHING PATTERN "*.dll")
+
+endif(WIN32)
+

@@ -91,7 +91,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH         ${CMAKE_PROJECT_VERSION_PATCH})
 IF (WIN32 AND NOT UNIX)
     # There is a bug in NSI that does not handle full unix paths properly. Make
     # sure there is at least one set of four (4) backlasshes.
-    SET(CPACK_PACKAGE_ICON              "${CMake_SOURCE_DIR}/resources/appicon.ico")
+    SET(CPACK_PACKAGE_ICON              "${CMAKE_CURRENT_SOURCE_DIR}/resources\\\\appicon.ico")
     SET(CPACK_NSIS_INSTALLED_ICON_NAME  "bin\\\\BorderlandsSaveEditor.exe")
     SET(CPACK_NSIS_DISPLAY_NAME         ${CMAKE_PROJECT_NAME})
     SET(CPACK_NSIS_HELP_LINK            "http:\\\\\\\\www.d4ve.org")

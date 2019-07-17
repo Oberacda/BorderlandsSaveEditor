@@ -25,7 +25,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_package(RapidJSON REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Gui REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Gui LinguistTools REQUIRED)
 find_package(Boost 1.68 REQUIRED
         COMPONENTS
         atomic

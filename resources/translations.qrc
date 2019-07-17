@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="translations">
+    <file>save_editor_en.qm</file>
+    <file>save_editor_de.qm</file>
+  </qresource>
+</RCC>

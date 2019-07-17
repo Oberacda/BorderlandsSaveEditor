@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QWidget>
 #include <QMainWindow>
+#include <QTranslator>
 
 #include "main.h"
 
@@ -20,6 +21,11 @@ static void saveFunc() {
 int main(int argc, char* argv[]) {
 
     auto* app = new QApplication(argc, argv);
+
+    QTranslator translator;
+    translator.load(":/translations/save_editor_de");
+    app->installTranslator(&translator);
+
     QMainWindow* mainWindow = new QMainWindow;
 
     Ui::MainWindow ui;

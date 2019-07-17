@@ -165,8 +165,23 @@ set(BorderlandsSaveEditor_EXE_RESOURCE_FILES
         ${BorderlandsSaveEditor_RESOURCE_DIR}/appicon.icns
         )
 
+# Using a source directory:
+qt5_create_translation(QM_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/SaveEditor_MainWindow.ui
+        ${BorderlandsSaveEditor_RESOURCE_DIR}/save_editor_en.ts
+        ${BorderlandsSaveEditor_RESOURCE_DIR}/save_editor_de.ts)
+
+configure_file(
+        ${BorderlandsSaveEditor_RESOURCE_DIR}/translations.qrc
+        ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+        COPYONLY
+)
+
 set(BorderlandsSaveEditor_EXE_PRIVATE_RESOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/Saveeditor_MainWindow.ui
+        ${QM_FILES}
+        ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+        ${BorderlandsSaveEditor_RESOURCE_DIR}/image_resources.qrc
         )
 
 if (WIN32)
@@ -189,6 +204,8 @@ if (WIN32)
             ${BorderlandsSaveEditor_EXE_VersionFilesOutputVariable}
             )
 endif (WIN32)
+
+
 
 add_executable(BorderlandsSaveEditor_EXE
         ${BorderlandsSaveEditor_EXE_INCLUDE_FILES}
@@ -214,6 +231,7 @@ set_target_properties(BorderlandsSaveEditor_EXE
         VERSION         "${CMAKE_PROJECT_VERSION}"
         AUTOMOC         ON
         AUTOUIC         ON
+        AUTORCC         ON
         )
 
 get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)

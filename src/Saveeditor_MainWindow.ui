@@ -90,6 +90,19 @@
        <attribute name="title">
         <string>General</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Test</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/image_resources.qrc">
+            <normaloff>:/img/appicon.png</normaloff>:/img/appicon.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="backpack_tab">
        <attribute name="title">
@@ -173,6 +186,9 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/image_resources.qrc"/>
+  <include location="../resources/string_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

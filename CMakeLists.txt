@@ -26,7 +26,7 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(RapidJSON REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Gui LinguistTools REQUIRED)
-find_package(Boost 1.68 REQUIRED
+find_package(Boost 1.67 REQUIRED
         COMPONENTS
         atomic
         chrono
@@ -41,7 +41,7 @@ find_package(Boost 1.68 REQUIRED
 find_package(ZLIB REQUIRED)
 find_package(LibZip REQUIRED)
 
-find_package(gtest)
+find_package(GTest)
 
 find_package(Doxygen)
 

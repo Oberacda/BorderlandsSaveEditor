@@ -178,7 +178,7 @@ configure_file(
 )
 
 set(BorderlandsSaveEditor_EXE_PRIVATE_RESOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Saveeditor_MainWindow.ui
+        ${CMAKE_CURRENT_SOURCE_DIR}/SaveEditor_MainWindow.ui
         ${QM_FILES}
         ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
         ${BorderlandsSaveEditor_RESOURCE_DIR}/image_resources.qrc

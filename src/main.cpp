@@ -9,7 +9,7 @@
 #include "library.hpp"
 #include "savefiles.hpp"
 
-#include "ui_Saveeditor_MainWindow.h"
+#include "ui_SaveEditor_MainWindow.h"
 
 static Borderlands::SaveEditor::SaveFile* save;
 
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     auto* app = new QApplication(argc, argv);
 
     QTranslator translator;
-    translator.load(":/translations/save_editor_de");
+    translator.load(":/translations/save_editor_en");
     app->installTranslator(&translator);
 
     QMainWindow* mainWindow = new QMainWindow;

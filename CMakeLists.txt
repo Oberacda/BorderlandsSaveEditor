@@ -57,12 +57,6 @@ set(BorderlandsSaveEditor_INCLUDE_DIR
 
 include_directories(${BorderlandsSaveEditor_INCLUDE_DIR})
 
-configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/resources/Manual_65_Old_Sycamore___24_Gozran__IV__4710___22_19_31.zks
-        ${CMAKE_CURRENT_BINARY_DIR}/bin/Manual_65_Old_Sycamore___24_Gozran__IV__4710___22_19_31.zip
-        @ONLY
-)
-
 set(BorderlandsSaveEditor_RESOURCE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/resources
         )

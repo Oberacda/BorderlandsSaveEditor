@@ -11,7 +11,7 @@ include(GenerateExportHeader)
 
 set(BorderlandsSaveEditor_VERSION "1.0.0.1")
 
-project(BorderlandsSaveEditorSaveEditor
+project(BorderlandsSaveEditor
         LANGUAGES   CXX
         VERSION     ${BorderlandsSaveEditor_VERSION}
         DESCRIPTION "Save editor for Borderlands 3"
@@ -40,6 +40,8 @@ find_package(Boost 1.67 REQUIRED
         )
 find_package(ZLIB REQUIRED)
 find_package(LibZip REQUIRED)
+find_package(LZO REQUIRED)
+find_package(OpenSSL COMPONENTS Crypto REQUIRED)
 
 find_package(GTest)
 

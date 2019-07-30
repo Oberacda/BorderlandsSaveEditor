@@ -8,6 +8,7 @@ add_executable(TEST_MAIN_EXE
 target_link_libraries(TEST_MAIN_EXE
         PUBLIC
         GTest::GTest
+        BorderlandsSaveEditor_Borderlands2_LIB
         )
 
 gtest_discover_tests(TEST_MAIN_EXE)

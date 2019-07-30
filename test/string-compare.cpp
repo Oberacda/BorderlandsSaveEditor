@@ -5,6 +5,7 @@
 #include <gtest/gtest.h> // googletest header file
 
 #include <string>
+#include <borderlands2.hpp>
 using std::string;
 
 const char *actualValTrue  = "hello gtest";
@@ -18,4 +19,8 @@ TEST(StrCompare, CStrEqual) {
 
 TEST(StrCompare, DISABLED_CStrNotEqual) {
     EXPECT_STREQ(expectVal, actualValFalse);
+}
+
+TEST(Borderlands2, VerifySaveFile) {
+    EXPECT_TRUE(verifySave("./resources/76561198034853688/Save0001.sav"));
 }

@@ -5,8 +5,7 @@ cmake_policy(SET CMP0087 NEW)
 set(BorderlandsSaveEditor_LIB_PUBLIC_INCLUDE_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/bl_save_editor_exports.hpp
 #        ${BorderlandsSaveEditor_INCLUDE_DIR}/library.hpp
-        ${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp
-        )
+        ${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp)
 
 set(BorderlandsSaveEditor_LIB_PRIVATE_INCLUDE_FILES)
 
@@ -83,8 +82,7 @@ set_target_properties(BorderlandsSaveEditor_LIB
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_PUBLIC_INCLUDE_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/bl2_save_editor_exports.hpp
-        ${BorderlandsSaveEditor_INCLUDE_DIR}/library.hpp
-        #${BorderlandsSaveEditor_INCLUDE_DIR}/savefiles.hpp
+        ${BorderlandsSaveEditor_INCLUDE_DIR}/borderlands2.hpp
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES)
@@ -95,9 +93,9 @@ set(BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_FILES
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/library.cpp
-        #${CMAKE_CURRENT_SOURCE_DIR}/savefile.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/borderlands2.cpp
         )
+
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_RESOURCE_FILES)
 
@@ -136,6 +134,8 @@ generate_export_header(BorderlandsSaveEditor_Borderlands2_LIB
 target_link_libraries(BorderlandsSaveEditor_Borderlands2_LIB
         PUBLIC
         BorderlandsSaveEditor_LIB
+        OpenSSL::Crypto
+        ${LZO_LIBRARIES}
         )
 
 target_compile_options(BorderlandsSaveEditor_Borderlands2_LIB

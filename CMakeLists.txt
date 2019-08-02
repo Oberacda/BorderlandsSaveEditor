@@ -12,7 +12,7 @@ include(GenerateExportHeader)
 set(BorderlandsSaveEditor_VERSION "1.0.0.1")
 
 project(BorderlandsSaveEditor
-        LANGUAGES   CXX
+        LANGUAGES   C CXX
         VERSION     ${BorderlandsSaveEditor_VERSION}
         DESCRIPTION "Save editor for Borderlands 3"
         )
@@ -40,7 +40,7 @@ find_package(Boost 1.67 REQUIRED
         )
 find_package(ZLIB REQUIRED)
 find_package(LibZip REQUIRED)
-find_package(LZO REQUIRED)
+#find_package(LZO REQUIRED)
 find_package(OpenSSL COMPONENTS Crypto REQUIRED)
 
 find_package(GTest)
@@ -50,7 +50,6 @@ find_package(Doxygen)
 include_directories(${RAPIDJSON_INCLUDE_DIRS})
 include_directories(${LIBZIP_INCLUDE_DIR})
 include_directories(${LIBZIP_CONF_INCLUDE_DIR})
-
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
 set(BorderlandsSaveEditor_INCLUDE_DIR

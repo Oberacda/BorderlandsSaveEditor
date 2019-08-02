@@ -5,7 +5,7 @@
 #include <gtest/gtest.h> // googletest header file
 
 #include <string>
-#include <borderlands2.hpp>
+#include <borderlands2/borderlands2.hpp>
 using std::string;
 
 const char *actualValTrue  = "hello gtest";

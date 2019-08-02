@@ -8,7 +8,7 @@
 #pragma once
 
 #include <string>
-#include "bl2_save_editor_exports.hpp"
+#include "borderlands2/bl2_save_editor_exports.hpp"
 
 /*!
  * @brief Checks if the file at a specific path is a valid Borderlands2 save file.

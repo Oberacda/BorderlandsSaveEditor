@@ -2,7 +2,7 @@
 // Created by David Oberacker on 2019-07-29.
 //
 
-#include <borderlands2.hpp>
+#include "borderlands2/borderlands2.hpp"
 
 #define BOOST_LOG_DYN_LINK 1
 
@@ -12,10 +12,12 @@
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/asio/streambuf.hpp>
+#include <boost/interprocess/streams/bufferstream.hpp>
 
 #include <openssl/sha.h>
-#include <lzo/lzo2a.h>
+#include <minilzo-2.10/minilzo.h>
+
+#include <common/common.hpp>
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lib_saveeditor_logger, boost::log::trivial::logger);
 
@@ -129,12 +131,11 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     lzo_memset(compressed_data, 0, compressed_size);
     lzo_memcpy(compressed_data, data + 4, compressed_size);
 
-    // TODO: Fix lzo decompression.
-    switch (lzo2a_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
+    switch (lzo1x_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
         case LZO_E_OK:
             BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::info)
                 << "LZO decompression successful!"
-                << " Failure at byte: " << uncompressed_size;
+                << " Uncompressed size (byte): " << uncompressed_size;
             break;
         case LZO_E_OUT_OF_MEMORY:
             BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
@@ -188,11 +189,55 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
             return false;
     }
 
-    std::cout << uncompressed_data << std::endl;
+
+    //Freeing compressed data space.
+    delete[] compressed_data;
+    compressed_data = nullptr;
+
+    char* uncompressed_data_char = reinterpret_cast<char *>(uncompressed_data);
+
+    boost::interprocess::bufferstream input_stream(uncompressed_data_char, uncompressed_size);
+
+    uint32_t innerSize = 0;
+    D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &innerSize, D4v3::Borderlands::Common::Streams::Endian::big_endian);
+
+    char magicNumber[3];
+    input_stream.read(magicNumber, 3);
+
+    uint32_t version = 0;
+    D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &version, D4v3::Borderlands::Common::Streams::Endian::little_endian);
+
+    D4v3::Borderlands::Common::Streams::Endian endianess;
+    if (version != 2) {
+        endianess = D4v3::Borderlands::Common::Streams::Endian::big_endian;
+    } else {
+        endianess = D4v3::Borderlands::Common::Streams::Endian::little_endian;
+    }
+
+    uint32_t hash;
+    D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &hash, endianess);
+
+    int32_t innerUncompressedSize = 0;
+    D4v3::Borderlands::Common::Streams::read_int32(&input_stream, &innerUncompressedSize, endianess);
+
+    int innerCompressedSize = innerSize - 3 - 4 - 4 - 4;
+    char* innerCompressedBytes = new char [innerCompressedSize];
+    input_stream.read(innerCompressedBytes, innerCompressedSize);
+
+    char* innerUncompressedBytes = new char[innerUncompressedSize];
+
+    D4v3::Borderlands::Common::Huffman::decode(innerCompressedBytes, innerCompressedSize, innerUncompressedBytes, innerUncompressedSize);
+
+    boost::interprocess::bufferstream inner_input_stream(innerUncompressedBytes, innerUncompressedSize);
+
+
+    std::string output = "";
+    inner_input_stream >> output;
+
+    std::cout << output << std::endl;
 
     // TODO: Implement the correct separation of the save data.
-
-    return false;
+    return true;
 }
 
 bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) noexcept(false) {

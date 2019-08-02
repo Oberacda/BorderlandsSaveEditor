@@ -6,27 +6,25 @@ set(BorderlandsSaveEditor_EXE_INCLUDE_DIR ${BorderlandsSaveEditor_INCLUDE_DIR}/s
 
 set(BorderlandsSaveEditor_EXE_INCLUDE_FILES
         ${BorderlandsSaveEditor_EXE_INCLUDE_DIR}/main.h
-        ${BorderlandsSaveEditor_EXE_INCLUDE_DIR}/savefiles.hpp
         )
 
-set(BorderlandsSaveEditor_EXE_SOURCE_FILESs
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/savefiles.cpp
+set(BorderlandsSaveEditor_EXE_SOURCE_FILES
         )
 
 set(BorderlandsSaveEditor_EXE_RESOURCE_FILES
-
         ${BorderlandsSaveEditor_RESOURCE_DIR}/appicon.icns
         )
 
 # Using a source directory:
+file(GLOB TS_FILES "${BorderlandsSaveEditor_RESOURCE_DIR}/langs/*.ts")
+
 qt5_create_translation(QM_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/SaveEditor_MainWindow.ui
-        ${BorderlandsSaveEditor_RESOURCE_DIR}/save_editor_en.ts
-        ${BorderlandsSaveEditor_RESOURCE_DIR}/save_editor_de.ts)
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${TS_FILES}
+        )
 
 configure_file(
-        ${BorderlandsSaveEditor_RESOURCE_DIR}/translations.qrc
+        ${BorderlandsSaveEditor_RESOURCE_DIR}/langs/translations.qrc
         ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
         COPYONLY
 )
@@ -47,7 +45,7 @@ if (WIN32)
     generate_product_version(
             BorderlandsSaveEditor_EXE_VersionFilesOutputVariable
             NAME                ${PROJECT_NAME}
-            ICON                "${BorderlandsSaveEditor_RESOURCE_DIR}/appicon.ico"
+            ICON                ${BorderlandsSaveEditor_RESOURCE_DIR}/appicon.ico
             VERSION_MAJOR       ${CMAKE_PROJECT_VERSION_MAJOR}
             VERSION_MINOR       ${CMAKE_PROJECT_VERSION_MINOR}
             VERSION_PATCH       ${CMAKE_PROJECT_VERSION_PATCH}
@@ -66,6 +64,7 @@ add_executable(BorderlandsSaveEditor_EXE
         ${BorderlandsSaveEditor_EXE_SOURCE_FILES}
         ${BorderlandsSaveEditor_EXE_RESOURCE_FILES}
         ${BorderlandsSaveEditor_EXE_PRIVATE_RESOURCE_FILES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         )
 
 

@@ -5,7 +5,6 @@
 #include <QTranslator>
 
 #include "save_editor/main.h"
-#include "save_editor/savefiles.hpp"
 
 #include "common/common.hpp"
 
@@ -24,7 +23,7 @@ int main(int argc, char* argv[]) {
     auto* app = new QApplication(argc, argv);
 
     QTranslator translator;
-    translator.load(":/translations/save_editor_de");
+    translator.load(":/translations/save_editor_en");
     app->installTranslator(&translator);
 
     QMainWindow* mainWindow = new QMainWindow;

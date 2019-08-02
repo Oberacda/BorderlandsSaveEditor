@@ -66,12 +66,12 @@ add_subdirectory(src)
 
 option(TESTING_ENABLED "Enabled testing of the project!" ON)
 
-if (GTEST_FOUND)
+if (GTEST_FOUND AND TESTING_ENABLED)
     enable_testing()
     add_subdirectory(test)
 
     message(STATUS "Testing enabled!")
-endif (GTEST_FOUND)
+endif (GTEST_FOUND AND TESTING_ENABLED)
 
 INCLUDE(InstallRequiredSystemLibraries)
 

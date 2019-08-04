@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+message LockoutData {
+    required string Lockout = 1;
+    required int32 Time = 2;
+    required bool IsFromDLC = 3;
+    required int32 DLCPackageId = 4;
+}

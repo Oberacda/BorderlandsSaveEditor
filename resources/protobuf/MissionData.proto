@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+import "MissionStatus.proto";
+
+message MissionData {
+    required string Mission = 1;
+    required MissionStatus Status = 2;
+    required bool IsFromDLC = 3;
+    required int32 DLCPackageId = 4;
+    repeated int32 ObjectivesProgress = 5 [packed=true];
+    required int32 ActiveObjectiveSetIndex = 6;
+    repeated int32 SubObjectiveSetIndexes = 7 [packed=true];
+    required bool NeedsRewards = 8;
+    optional int32 Unknown9 = 9;
+    required bool HeardKickoff = 10;
+    required int32 GameStage = 11;
+}

@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+message SkillData {
+    required string Skill = 1;
+    required int32 Grade = 2;
+    required int32 GradePoints = 3;
+    required int32 EquippedSlotIndex = 4;
+}

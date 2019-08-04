@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import "WeaponData.proto";
+import "ItemData.proto";
+import "PackedWeaponDataOptional.proto";
+import "PackedItemDataOptional.proto";
+
+message PendingMissionRewards {
+    required string Mission = 1;
+    repeated WeaponData WeaponRewards = 2;
+    repeated ItemData ItemRewards = 3;
+    repeated PackedWeaponDataOptional PackedWeaponRewards = 4;
+    repeated PackedItemDataOptional PackedItemRewards = 5;
+    required bool IsFromDLC = 6;
+    required int32 DLCPackageId = 7;
+}

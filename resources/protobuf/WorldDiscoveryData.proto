@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message WorldDiscoveryData {
+    required string DiscoveryName = 1;
+    required bool HasBeenUncovered = 2;
+}

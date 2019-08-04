@@ -18,6 +18,7 @@
 #include <minilzo-2.10/minilzo.h>
 
 #include <common/common.hpp>
+#include <borderlands2/WillowTwoPlayerSaveGame.pb.h>
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lib_saveeditor_logger, boost::log::trivial::logger);
 
@@ -228,13 +229,14 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
 
     D4v3::Borderlands::Common::Huffman::decode(innerCompressedBytes, innerCompressedSize, innerUncompressedBytes, innerUncompressedSize);
 
-    boost::interprocess::bufferstream inner_input_stream(innerUncompressedBytes, innerUncompressedSize);
+    WillowTwoPlayerSaveGame save_game;
+    if(!save_game.ParseFromArray(innerUncompressedBytes, innerUncompressedSize)) {
+        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            << "Deserialization failed!";
+        return false;
+    }
 
-
-    std::string output = "";
-    inner_input_stream >> output;
-
-    std::cout << output << std::endl;
+    std::cout << save_game.playerclass() << std::endl;
 
     // TODO: Implement the correct separation of the save data.
     return true;

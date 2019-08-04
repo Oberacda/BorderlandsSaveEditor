@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+import "Color.proto";
+
+message UIPreferencesData {
+    required bytes CharacterName = 1;
+    required Color PrimaryColor = 2;
+    required Color SecondaryColor = 3;
+    required Color TertiaryColor = 4;
+}

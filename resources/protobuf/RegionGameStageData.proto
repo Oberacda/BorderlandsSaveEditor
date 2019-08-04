@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message RegionGameStageData {
+    required string Region = 1;
+    required int32 GameStage = 2;
+    required bool IsFromDLC = 3;
+    required int32 DLCPackageId = 4;
+    required int32 PlaythroughIndex = 5;
+}

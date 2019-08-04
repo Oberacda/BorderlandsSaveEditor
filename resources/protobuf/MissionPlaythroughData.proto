@@ -1,0 +1,9 @@
+syntax = "proto2";
+import "MissionData.proto";
+
+message MissionPlaythroughData {
+    optional int32 PlayThroughNumber = 1;
+    required string ActiveMission = 2;
+    repeated MissionData MissionData = 3;
+
+}

@@ -12,7 +12,49 @@ set(BorderlandsSaveEditor_Borderlands2_LIB_PUBLIC_INCLUDE_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/bl2_save_editor_exports.hpp
         )
 
-set(BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES)
+set(BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR ${BorderlandsSaveEditor_RESOURCE_DIR}/protobuf)
+
+set(BorderlandsSaveEditor_Borderlands2_LIB_PROTO_FILES
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/BankSlot.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/ChallengeData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/ChosenVehicleCustomization.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/Color.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/DLCExpansionData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/GoldenKeys.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/GUID.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/InventorySlotData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/ItemData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/ItemMemento.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/LockoutData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/MissionData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/MissionPlaythroughData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/MissionStatus.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/OneOffLevelChallengeData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PackedItemData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PackedItemDataOptional.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PackedWeaponData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PackedWeaponDataOptional.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PendingMissionRewards.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/PlayerMark.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/QuickWeaponSlot.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/RegionGameStageData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/ResourceData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/SkillData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/UIPreferencesData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/WeaponData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/WeaponMemento.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/WorldDiscoveryData.proto
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_DIR}/WillowTwoPlayerSaveGame.proto
+        )
+
+protobuf_generate_cpp(BorderlandsSaveEditor_Borderlands2_LIB_PROTO_SRCS
+        BorderlandsSaveEditor_Borderlands2_LIB_PROTO_HDRS
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_FILES}
+        )
+
+set(BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_HDRS}
+        )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_FILES
         ${BorderlandsSaveEditor_LIB_PUBLIC_INCLUDE_FILES}
@@ -20,9 +62,9 @@ set(BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_FILES
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_SOURCE_FILES
+        ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/borderlands2.cpp
         )
-
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_RESOURCE_FILES)
 
@@ -73,6 +115,7 @@ target_link_libraries(BorderlandsSaveEditor_Borderlands2_LIB
         Boost::thread
         Boost::regex
         ${LIBZIP_LIBRARY}
+        ${Protobuf_LIBRARIES}
         )
 
 target_compile_options(BorderlandsSaveEditor_Borderlands2_LIB

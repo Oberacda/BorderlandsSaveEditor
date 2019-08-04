@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+import "PlayerMark.proto";
+import "QuickWeaponSlot.proto";
+
+message PackedWeaponDataOptional {
+    optional bytes InventorySerialNumber = 1;
+    optional QuickWeaponSlot QuickSlot = 2;
+    optional PlayerMark Mark = 3;
+    optional int32 Unknown4 = 4;
+}

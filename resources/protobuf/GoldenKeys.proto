@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message GoldenKeys {
+    required int32 unknown1 = 1;
+    required int32 unknown2 = 2;
+}

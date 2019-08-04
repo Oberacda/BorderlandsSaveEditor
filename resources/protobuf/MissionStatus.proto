@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+enum MissionStatus {
+    NotStarted = 0;
+    Active = 1;
+    RequiredObjectivesComplete = 2;
+    ReadyToTurnIn = 3;
+    Complete = 4;
+    Failed = 5;
+}

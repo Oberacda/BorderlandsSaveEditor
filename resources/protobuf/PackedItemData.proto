@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+message PackedItemData {
+    required bytes InventorySerialNumber = 1;
+    required int32 Quantity = 2;
+    required bool Equipped = 3;
+    required int32 Mark = 4;
+}

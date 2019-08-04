@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+import "PlayerMark.proto";
+
+message ItemData {
+    required string Balance  = 1;
+    required string Type = 2;
+    required string AlphaPart = 3;
+    required string BetaPart = 4;
+    required string GammaPart = 5;
+    required string DeltaPart = 6;
+    required string EpislonPart = 7;
+    required string ZetaPart = 8;
+    required string EtaPart = 9;
+    required string ThetaPart = 10;
+    required string MaterialPart = 11;
+    required string Manufacturer = 12;
+    required string PrefixPart = 13;
+    required string TitlePart = 14;
+    required int32 Quantity = 15;
+    required int32 ManufacturerGradeIndex = 16;
+    required bool Equipped = 17;
+    required PlayerMark Mark = 18;
+}

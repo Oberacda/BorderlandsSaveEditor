@@ -47,6 +47,9 @@ find_package(GTest)
 
 find_package(Doxygen)
 
+find_package(Protobuf REQUIRED)
+
+include_directories(${Protobuf_INCLUDE_DIRS})
 include_directories(${RAPIDJSON_INCLUDE_DIRS})
 include_directories(${LIBZIP_INCLUDE_DIR})
 include_directories(${LIBZIP_CONF_INCLUDE_DIR})

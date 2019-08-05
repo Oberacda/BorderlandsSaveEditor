@@ -127,7 +127,8 @@ elseif (APPLE)
 
 endif ()
 
-get_filename_component(ZLIB_LIBRARY_DIR ${ZLIB_LIBRARIES} DIRECTORY)
+get_filename_component(ZLIB_LIBRARY_DIR "${ZLIB_LIBRARIES}" DIRECTORY)
+get_filename_component(OPENSSL_LIBRARY_DIR "${OPENSSL_CRYPTO_LIBRARY}" DIRECTORY)
 
 install(TARGETS BorderlandsSaveEditor_EXE
         RUNTIME
@@ -141,7 +142,7 @@ install(TARGETS BorderlandsSaveEditor_EXE
 if(WIN32)
     install(CODE 
         "include(BundleUtilities)\n
-        fixup_bundle(\"$<TARGET_FILE:BorderlandsSaveEditor_EXE>\" \"\" \"${ZLIB_LIBRARY_DIR}/../bin;${LIBZIP_LIBRARY_DIR}/../bin;${Boost_LIBRARY_DIRS}\")"
+        fixup_bundle(\"$<TARGET_FILE:BorderlandsSaveEditor_EXE>\" \"\" \"${OPENSSL_LIBRARY_DIR}/../bin;${ZLIB_LIBRARY_DIR}/../bin;${LIBZIP_LIBRARY_DIR}/../bin;${Boost_LIBRARY_DIRS}\")"
         COMPONENT Runtime
         )
 

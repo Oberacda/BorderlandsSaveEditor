@@ -1,7 +1,7 @@
 
 #include <Windows.h>
 
-#include "main.h"
+#include "save_editor/main.h"
 
 // Convert a wchar_t to char string, equivalent to QString::toLocal8Bit()
 // when passed CP_ACP.

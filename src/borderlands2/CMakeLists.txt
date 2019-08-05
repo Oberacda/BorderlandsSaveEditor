@@ -103,8 +103,8 @@ generate_export_header(BorderlandsSaveEditor_Borderlands2_LIB
 target_link_libraries(BorderlandsSaveEditor_Borderlands2_LIB
         PUBLIC
         Borderlands_Common_LIB
-        OpenSSL::Crypto
         EXTERNAL_MiniLZO_LIB
+        OpenSSL::Crypto
         Boost::atomic
         Boost::chrono
         Boost::date_time
@@ -129,4 +129,18 @@ set_target_properties(BorderlandsSaveEditor_Borderlands2_LIB
         PUBLIC_HEADERS  "${BorderlandsSaveEditor_Borderlands2_LIB_PUBLIC_INCLUDE_FILES}"
         PRIVATE_HEADERS "${BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES}"
         VERSION         "${CMAKE_PROJECT_VERSION}"
+        )
+
+install(TARGETS BorderlandsSaveEditor_Borderlands2_LIB
+        CONFIGURATIONS Debug RelWithDebInfo
+        ARCHIVE
+        DESTINATION lib
+        COMPONENT Development
+        LIBRARY
+        DESTINATION lib
+        COMPONENT Libraries
+        NAMELINK_COMPONENT Development
+        PUBLIC_HEADER
+        DESTINATION include
+        COMPONENT Development
         )

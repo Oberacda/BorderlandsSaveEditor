@@ -11,8 +11,9 @@ add_executable(BorderlandsSaveEditor_Borderlands2_LIB_TEST
 
 target_link_libraries(BorderlandsSaveEditor_Borderlands2_LIB_TEST
         PUBLIC
-        GTest::GTest
         BorderlandsSaveEditor_Borderlands2_LIB
+        PRIVATE
+        GTest::GTest
         )
 
 set_target_properties(BorderlandsSaveEditor_Borderlands2_LIB_TEST
@@ -21,5 +22,20 @@ set_target_properties(BorderlandsSaveEditor_Borderlands2_LIB_TEST
         LANGUAGES       CXX
         VERSION         "${CMAKE_PROJECT_VERSION}"
         )
+
+if(WIN32)
+    get_filename_component(OPENSSL_LIBRARY_DIR "${OPENSSL_CRYPTO_LIBRARY}" DIRECTORY)
+
+    install(CODE 
+        "include(BundleUtilities)\n
+        fixup_bundle(\"$<TARGET_FILE:BorderlandsSaveEditor_Borderlands2_LIB_TEST>\" \"\" \"${OPENSSL_LIBRARY_DIR}/../bin;${ZLIB_LIBRARY_DIR}/../bin;${LIBZIP_LIBRARY_DIR}/../bin;${Boost_LIBRARY_DIRS}\")"
+        COMPONENT Runtime
+        )
+
+    install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        DESTINATION .
+        FILES_MATCHING PATTERN "*.dll")
+
+endif(WIN32)
 
 gtest_discover_tests(BorderlandsSaveEditor_Borderlands2_LIB_TEST)

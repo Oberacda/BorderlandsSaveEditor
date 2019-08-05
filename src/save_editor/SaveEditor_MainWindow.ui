@@ -100,6 +100,12 @@
            <iconset resource="../resources/image_resources.qrc">
             <normaloff>:/img/appicon.png</normaloff>:/img/appicon.png</iconset>
           </property>
+          <property name="iconSize">
+           <size>
+            <width>64</width>
+            <height>64</height>
+           </size>
+          </property>
          </widget>
         </item>
        </layout>
@@ -149,7 +155,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -188,7 +194,6 @@
  </widget>
  <resources>
   <include location="../resources/image_resources.qrc"/>
-  <include location="../resources/string_resources.qrc"/>
  </resources>
  <connections/>
 </ui>

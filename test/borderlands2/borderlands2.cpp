@@ -31,10 +31,10 @@ protected:
 };
 
 TEST_F(Borderlands2Test, VerifySaveFile) {
-    EXPECT_TRUE(verifySave("../../resources/76561198034853688/Save0001.sav"));
+    EXPECT_TRUE(verifySave("..\\..\\resources\\76561198034853688\\Save0001.sav"));
 }
 
 TEST_F(Borderlands2Test, InvalidPath) {
-    EXPECT_THROW(verifySave("./../resources/76561198034853688/Save0001.sav"), boost::filesystem::filesystem_error);
-    EXPECT_THROW(verifySave("./../resources/76561198034853688/Save0001.sav"), boost::filesystem::filesystem_error);
+    EXPECT_FALSE(verifySave("./../resources/76561198034853688/Save0001.sav"), boost::filesystem::filesystem_error);
+    EXPECT_FALSE(verifySave("./../resources/76561198034853688/Save0001.sav"), boost::filesystem::filesystem_error);
 }

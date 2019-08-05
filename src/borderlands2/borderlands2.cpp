@@ -42,13 +42,15 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
 
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
 
-    if (!istream) {
+    if (!istream->is_open()) {
         BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
             << "The given filestream in invalid!";
         throw std::invalid_argument("The given input stream is invalid!");
     }
 
-    char checksum_read[20];
+    char* checksum_read = new char[20];
+    memset(checksum_read, 0 , 20);
+
     (*istream).read(checksum_read, 20);
     if ((*istream).rdstate() != 0) {
         BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
@@ -61,20 +63,36 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
     }
 
     memcpy(checksum, checksum_read, 20);
+    delete [] checksum_read;
+    checksum_read = nullptr;
 
-    char data_read[data_size];
+    char* data_read = new char[data_size];
+    memset(data_read, 0 , data_size);
+
     (*istream).read(data_read, data_size);
-    if ((*istream).rdstate() != 0) {
+    int32_t istream_state = (int32_t) (*istream).rdstate();
+
+    if (istream_state != 0) {
         BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
-            << "The previous read operation on the stream failed!";
-        if (((*istream).rdstate() & boost::filesystem::ifstream::eofbit) != 0) {
+            << "Failed to read: " << data_size << " bytes! Could only read: " << (*istream).gcount() << " bytes!";
+        if ((istream_state & boost::filesystem::ifstream::eofbit) != 0) {
             BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
-                << "EOF was encountered while reading " << checksum_size << " bytes!";
+                << "EOF was encountered!";
+        }
+        if ((istream_state & boost::filesystem::ifstream::badbit) != 0) {
+            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+                << "BadBit was encountered!";
+        }
+        if ((istream_state & boost::filesystem::ifstream::failbit) != 0) {
+            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+                << "FailBit was encountered!";
         }
         return false;
     }
 
     memcpy(data, data_read, data_size);
+    delete[] data_read;
+    data_read = nullptr;
 
     return true;
 }
@@ -82,12 +100,12 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
 bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(false) {
 
     boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
-
     BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Verifying savefile!";
 
     if (!isSaveFile(path)) {
         BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
             << "Invalid path specified";
+        return false;
     }
 
     std::unique_ptr<boost::filesystem::path> save_file = std::make_unique<boost::filesystem::path>(path);
@@ -105,32 +123,38 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     }
 
 
-    boost::filesystem::ifstream save_file_stream(*save_file);
+    boost::filesystem::ifstream save_file_stream(*save_file, boost::filesystem::ifstream::in | boost::filesystem::ifstream::binary);
     size_t size = boost::filesystem::file_size(*save_file) - 20;
-    uint8_t checksum[20];
-    uint8_t data[size];
+    auto* checksum = new uint8_t[20];
+    memset(checksum, 0, 20);
 
-    getDataFromFile(&save_file_stream, checksum, 20, data, size);
+    auto* data = new uint8_t[size];
+    memset(data, 0, size);
+
+    if(!getDataFromFile(&save_file_stream, checksum, 20, data, size)) {
+        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error) << "Could not get data from file!";
+        return false;
+    }
 
     save_file_stream.close();
     save_file.reset(nullptr);
 
-    if (lzo_init() != 0) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Failed to init LZO library!";
-        // TODOs: Throw error to signal library error ?
-        return false;
-    }
+    delete[] checksum;
+    checksum = nullptr;
 
     size_t uncompressed_size = 0;
     uncompressed_size = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
 
-    lzo_bytep uncompressed_data = new lzo_byte[uncompressed_size];
-    lzo_memset(uncompressed_data, 0, uncompressed_size);
+    auto* uncompressed_data = new unsigned char[uncompressed_size];
+    memset(uncompressed_data, 0, uncompressed_size);
 
     size_t compressed_size = size - 4;
-    lzo_bytep compressed_data = new lzo_byte[compressed_size];
-    lzo_memset(compressed_data, 0, compressed_size);
-    lzo_memcpy(compressed_data, data + 4, compressed_size);
+    auto* compressed_data = new unsigned char[compressed_size];
+    memset(compressed_data, 0, compressed_size);
+    memcpy(compressed_data, data + 4, compressed_size);
+
+    delete[] data;
+    data = nullptr;
 
     switch (lzo1x_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
         case LZO_E_OK:
@@ -195,7 +219,8 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     delete[] compressed_data;
     compressed_data = nullptr;
 
-    char* uncompressed_data_char = reinterpret_cast<char *>(uncompressed_data);
+    auto* uncompressed_data_char = reinterpret_cast<char *>(uncompressed_data);
+
 
     boost::interprocess::bufferstream input_stream(uncompressed_data_char, uncompressed_size);
 
@@ -203,6 +228,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &innerSize, D4v3::Borderlands::Common::Streams::Endian::big_endian);
 
     char magicNumber[3];
+    memset(magicNumber, 0 ,3);
     input_stream.read(magicNumber, 3);
 
     uint32_t version = 0;
@@ -223,9 +249,15 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
 
     int innerCompressedSize = innerSize - 3 - 4 - 4 - 4;
     char* innerCompressedBytes = new char [innerCompressedSize];
+    memset(innerCompressedBytes, 0, innerCompressedSize);
     input_stream.read(innerCompressedBytes, innerCompressedSize);
 
+    delete[] uncompressed_data;
+    uncompressed_data = nullptr;
+    uncompressed_data_char = nullptr;
+
     char* innerUncompressedBytes = new char[innerUncompressedSize];
+    memset(innerUncompressedBytes, 0, innerUncompressedSize);
 
     D4v3::Borderlands::Common::Huffman::decode(innerCompressedBytes, innerCompressedSize, innerUncompressedBytes, innerUncompressedSize);
 
@@ -278,18 +310,27 @@ bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) 
         }
     }
 
-    boost::filesystem::ifstream save_file_stream(*save_file);
+    BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Save file path: " << *save_file;
+
+    boost::filesystem::ifstream save_file_stream(*save_file, boost::filesystem::ifstream::in | boost::filesystem::ifstream::binary);
+
     uint64_t size = boost::filesystem::file_size(*save_file) - 20;
-    uint8_t checksum[20];
-    uint8_t data[size];
+
+    auto* checksum = new uint8_t[20];
+    memset(checksum, 0, 20);
+
+    auto* data = new uint8_t[size];
+    memset(data, 0, size);
 
     if (!getDataFromFile(&save_file_stream, checksum, 20, data, size)) {
         BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
             << "Error getting data and checksum from file: " << *save_file << "! ";
-
+        return false;
     }
 
-    uint8_t checksum_data[20];
+    auto* checksum_data = new uint8_t[20];
+    memset(checksum_data, 0, 20);
+
     SHA1(data, size, checksum_data);
 
     for (int i = 0; i < 20; ++i) {
@@ -301,6 +342,13 @@ bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) 
             return false;
         }
     }
+
+    delete[] data;
+    data = nullptr;
+    delete[] checksum;
+    checksum = nullptr;
+    delete[] checksum_data;
+    checksum_data = nullptr;
 
     BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::info)
         << "Validated save file at: " << *save_file << "! ";

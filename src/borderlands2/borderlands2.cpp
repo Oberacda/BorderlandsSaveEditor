@@ -7,11 +7,14 @@
 #define BOOST_LOG_DYN_LINK 1
 
 #include <boost/date_time.hpp>
-#include <boost/log/core.hpp>
+
+#include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/trivial.hpp>
+#include <boost/log/utility/manipulators/add_value.hpp>
+
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 #include <openssl/sha.h>
@@ -19,8 +22,10 @@
 
 #include <common/common.hpp>
 #include <borderlands2/WillowTwoPlayerSaveGame.pb.h>
+#include <borderlands2/borderlands2_logger.hpp>
 
-BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lib_saveeditor_logger, boost::log::trivial::logger);
+//BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(lib_saveeditor_logger, boost::log::trivial::logger);
+//BOOST_LOG_INLINE_GLOBAL_LOGGER_CTOR_ARGS(lib_saveeditor_logger, boost::log::sources::severity_logger_mt< >,  (keywords::severity = error)(keywords::channel = "borderlands2"))
 
 /*!
  * @brief Gets the data and the checksum from a input file stream.
@@ -40,10 +45,9 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
                      uint8_t *checksum, uint64_t checksum_size,
                      uint8_t *data, uint64_t data_size) noexcept(false) {
 
-    boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
-
+    // boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
     if (!istream->is_open()) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "The given filestream in invalid!";
         throw std::invalid_argument("The given input stream is invalid!");
     }
@@ -53,10 +57,10 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
 
     (*istream).read(checksum_read, 20);
     if ((*istream).rdstate() != 0) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "The previous read operation on the stream failed!";
         if (((*istream).rdstate() & boost::filesystem::ifstream::eofbit) != 0) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "EOF was encountered while reading " << checksum_size << " bytes!";
         }
         return false;
@@ -73,18 +77,18 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
     int32_t istream_state = (int32_t) (*istream).rdstate();
 
     if (istream_state != 0) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Failed to read: " << data_size << " bytes! Could only read: " << (*istream).gcount() << " bytes!";
         if ((istream_state & boost::filesystem::ifstream::eofbit) != 0) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "EOF was encountered!";
         }
         if ((istream_state & boost::filesystem::ifstream::badbit) != 0) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "BadBit was encountered!";
         }
         if ((istream_state & boost::filesystem::ifstream::failbit) != 0) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "FailBit was encountered!";
         }
         return false;
@@ -99,11 +103,11 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
 
 bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(false) {
 
-    boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
-    BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Verifying savefile!";
+    // boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
+    BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Verifying savefile!";
 
     if (!isSaveFile(path)) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Invalid path specified";
         return false;
     }
@@ -111,13 +115,13 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     std::unique_ptr<boost::filesystem::path> save_file = std::make_unique<boost::filesystem::path>(path);
 
     if (!save_file->is_absolute()) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Making specified path absolute!";
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Making specified path absolute!";
         try {
             boost::filesystem::path canonical_path = boost::filesystem::absolute(*(save_file));
             save_file.reset(nullptr);
             save_file = std::make_unique<boost::filesystem::path>(canonical_path);
         } catch (boost::filesystem::filesystem_error &ex) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error) << ex.what();
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error) << ex.what();
             throw std::runtime_error(ex.what());
         }
     }
@@ -132,7 +136,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
     memset(data, 0, size);
 
     if(!getDataFromFile(&save_file_stream, checksum, 20, data, size)) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error) << "Could not get data from file!";
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error) << "Could not get data from file!";
         return false;
     }
 
@@ -158,59 +162,59 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
 
     switch (lzo1x_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
         case LZO_E_OK:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::info)
-                << "LZO decompression successful!"
-                << " Uncompressed size (byte): " << uncompressed_size;
+            BOOST_LOG_CHANNEL_SEV(D4v3::Borderlands2::borderlands2_logger::get(), "Decompression", D4v3::Borderlands2::severity_level::info)
+                << boost::log::add_value("Uncompressed size(bytes)", uncompressed_size)
+                << "LZO decompression successful!";
             break;
         case LZO_E_OUT_OF_MEMORY:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Out of memory!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_INPUT_OVERRUN:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Input overrun!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_OUTPUT_OVERRUN:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Output overrun!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_LOOKBEHIND_OVERRUN:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Lookbehind overrun!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_EOF_NOT_FOUND:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! EOF not found!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_INPUT_NOT_CONSUMED:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Input not consumed!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_INVALID_ARGUMENT:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Invalid Argument!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_INVALID_ALIGNMENT:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed! Output Alignment!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         case LZO_E_OUTPUT_NOT_CONSUMED:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
-                << "LZO decompression failed! Output not consumeds!"
-                << " Failure at byte: " << uncompressed_size;
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
+                << "LZO decompression failed! Output not consumed!"
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
         default:
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "LZO decompression failed!"
-                << " Failure at byte: " << uncompressed_size;
+                << boost::log::add_value("Bytes consumed", uncompressed_size);
             return false;
     }
 
@@ -263,7 +267,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
 
     WillowTwoPlayerSaveGame save_game;
     if(!save_game.ParseFromArray(innerUncompressedBytes, innerUncompressedSize)) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Deserialization failed!";
         return false;
     }
@@ -275,42 +279,40 @@ bool BORDERLANDS2_SAVE_EDITOR_API verifySave(const std::string &path) noexcept(f
 }
 
 bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) noexcept(false) {
-    boost::log::trivial::logger &logger = lib_saveeditor_logger::get();
-
     std::unique_ptr<boost::filesystem::path> save_file = std::make_unique<boost::filesystem::path>(path);
 
     if (!boost::filesystem::exists(*(save_file))) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Invalid path specified";
         return false;
     }
 
 
     if (!boost::filesystem::is_regular_file(*(save_file))) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Specified path does not lead to a file!";
         return false;
     }
 
     if ((save_file->extension().generic_string() != ".sav")) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Specified path does not lead to a sav file!";
         return false;
     }
 
     if (!save_file->is_absolute()) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Making specified path absolute!";
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Making specified path absolute!";
         try {
             boost::filesystem::path canonical_path = boost::filesystem::absolute(*(save_file));
             save_file.reset(nullptr);
             save_file = std::make_unique<boost::filesystem::path>(canonical_path);
         } catch (boost::filesystem::filesystem_error &ex) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error) << ex.what();
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error) << ex.what();
             throw std::runtime_error(ex.what());
         }
     }
 
-    BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::debug) << "Save file path: " << *save_file;
+    BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Save file path: " << *save_file;
 
     boost::filesystem::ifstream save_file_stream(*save_file, boost::filesystem::ifstream::in | boost::filesystem::ifstream::binary);
 
@@ -323,7 +325,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) 
     memset(data, 0, size);
 
     if (!getDataFromFile(&save_file_stream, checksum, 20, data, size)) {
-        BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+        BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Error getting data and checksum from file: " << *save_file << "! ";
         return false;
     }
@@ -335,7 +337,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) 
 
     for (int i = 0; i < 20; ++i) {
         if (checksum[i] != checksum_data[i]) {
-            BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::error)
+            BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "SHA1 checksum invalid: Byte " << i
                 << " is not equal: Checksum(Data): " << std::hex << checksum_data[i] << " <-> "
                 << "Checksum: " << std::hex << checksum[i];
@@ -350,7 +352,7 @@ bool BORDERLANDS2_SAVE_EDITOR_API_NO_EXPORT isSaveFile(const std::string &path) 
     delete[] checksum_data;
     checksum_data = nullptr;
 
-    BOOST_LOG_SEV(logger.get(), boost::log::trivial::severity_level::info)
+    BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::info)
         << "Validated save file at: " << *save_file << "! ";
 
     save_file_stream.close();

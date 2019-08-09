@@ -54,6 +54,7 @@ protobuf_generate_cpp(BorderlandsSaveEditor_Borderlands2_LIB_PROTO_SRCS
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES
         ${BorderlandsSaveEditor_Borderlands2_LIB_PROTO_HDRS}
+        ${BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_DIR}/borderlands2_logger.hpp
         )
 
 set(BorderlandsSaveEditor_Borderlands2_LIB_INCLUDE_FILES
@@ -129,6 +130,7 @@ set_target_properties(BorderlandsSaveEditor_Borderlands2_LIB
         PUBLIC_HEADERS  "${BorderlandsSaveEditor_Borderlands2_LIB_PUBLIC_INCLUDE_FILES}"
         PRIVATE_HEADERS "${BorderlandsSaveEditor_Borderlands2_LIB_PRIVATE_INCLUDE_FILES}"
         VERSION         "${CMAKE_PROJECT_VERSION}"
+        CXX_STANDARD    17
         )
 
 install(TARGETS BorderlandsSaveEditor_Borderlands2_LIB

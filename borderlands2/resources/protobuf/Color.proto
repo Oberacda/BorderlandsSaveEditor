@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+message Color {
+    required int32 A =1;
+    required int32 R =2;
+    required int32 G =3;
+    required int32 B =4;
+}

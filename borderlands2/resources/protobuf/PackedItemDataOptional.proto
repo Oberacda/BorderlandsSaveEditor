@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+import "PlayerMark.proto";
+
+message PackedItemDataOptional {
+    optional bytes InventorySerialNumber = 1;
+    optional int32 Quantity = 2;
+    optional bool Equipped = 3;
+    optional PlayerMark Mark = 4;
+}

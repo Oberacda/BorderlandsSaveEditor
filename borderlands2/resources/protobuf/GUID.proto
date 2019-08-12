@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+message GUID {
+    required fixed32 A = 1;
+    required fixed32 B = 2;
+    required fixed32 C = 3;
+    required fixed32 D = 4;
+}

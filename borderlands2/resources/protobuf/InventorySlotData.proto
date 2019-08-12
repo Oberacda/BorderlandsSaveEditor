@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message InventorySlotData {
+    required int32 InventorySlotMax = 1;
+    required int32 WeaponReadyMax = 2;
+    required int32 NumQuickSlotsFlourished = 3;
+}

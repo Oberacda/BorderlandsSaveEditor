@@ -1,0 +1,28 @@
+syntax = "proto2";
+import "PlayerMark.proto";
+import "QuickWeaponSlot.proto";
+
+message WeaponData {
+    required string Balance = 1;
+    required string Manufacturer = 2;
+    required string Type = 3;
+    required string BodyPart = 4;
+    required string GripPart = 5;
+    required string BarrelPart = 6;
+    required string SightPart = 7;
+    required string StockPart = 8;
+    required string Unknown9 = 9;
+    required string Unknown10 = 10;
+    required string Unknown11 = 11;
+    required string Unknown12 = 12;
+    required string MaterialPart = 13;
+    required string PrefixPart = 14;
+    required string TitlePart = 15;
+    required int32 Unknown16 = 16;
+    required int32 ManufacturerGradeIndex = 17;
+    required QuickWeaponSlot QuickSlot = 18;
+    required PlayerMark Mark = 19;
+    required string ElementalPart = 20;
+    required string Accessory1Part = 21;
+    required string Accessory2Part = 22;
+}

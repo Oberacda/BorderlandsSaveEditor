@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message ChosenVehicleCustomization {
+    required string Family = 1;
+    repeated string Customizations = 2;
+}

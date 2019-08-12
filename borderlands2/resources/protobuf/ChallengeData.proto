@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message ChallengeData {
+    required string Challenge = 1;
+    required bool IsFromDLC = 2;
+    required int32 DLCPackageId = 3;
+}

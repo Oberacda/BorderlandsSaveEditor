@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+enum PlayerMark {
+    Trash = 0;
+    Standard = 1;
+    Favorite = 2;
+};

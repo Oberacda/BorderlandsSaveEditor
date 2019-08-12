@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message DLCExpansionData {
+    required int32 Tag = 1;
+    required bytes Data = 2;
+}

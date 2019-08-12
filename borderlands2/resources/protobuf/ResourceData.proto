@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message ResourceData {
+    required string Resource = 1;
+    required string Pool = 2;
+    required float Amount = 3;
+    required int32 UpgradeLevel = 4;
+
+}

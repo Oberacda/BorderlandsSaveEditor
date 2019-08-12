@@ -1,0 +1,28 @@
+syntax = "proto2";
+
+message WeaponMemento {
+    required string Unknown1 = 1;
+    required string Unknown2 = 2;
+    required string Unknown3 = 3;
+    required int32 Unknown4 = 4;
+    required string Unknown5 = 5;
+    required string Unknown6 = 6;
+    required string Unknown7 = 7;
+    required string Unknown8 = 8;
+    required string Unknown9 = 9;
+    required string Unknown10 = 10;
+    required string Unknown11 = 11;
+    required string Unknown12 = 12;
+    required string Unknown13 = 13;
+    required string Unknown14 = 14;
+    required string Unknown15 = 15;
+    required string Unknown16 = 16;
+    required int32 Unknown17 = 17;
+    required int32 Unknown18 = 18;
+    required bool Unknown19 = 19;
+    required bool Unknown20 = 20;
+    required int32 Unknown21 = 21;
+    required string Unknown22 = 22;
+    required string Unknown23 = 23;
+    required string Unknown24 = 24;
+}

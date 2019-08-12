@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+message ItemMemento {
+    required string unknown1 = 1;
+    required string unknown2 = 2;
+    required string unknown3 = 3;
+    required int32 unknown4 = 4;
+    required string unknown5 = 5;
+    required string unknown6 = 6;
+    required string unknown7 = 7;
+    required string unknown8 = 8;
+    required string unknown9 = 9;
+    required string unknown10 = 10;
+    required string unknown11 = 11;
+    required string unknown12 = 12;
+    required string unknown13 = 13;
+    required string unknown14 = 14;
+    required string unknown15 = 15;
+    required int32 unknown16 = 16;
+    required int32 unknown17 = 17;
+    required bool unknown18 = 18;
+    required bool unknown19 = 19;
+    required bool unknown20 = 20;
+}

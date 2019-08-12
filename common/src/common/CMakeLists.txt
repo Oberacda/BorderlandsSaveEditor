@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-set(Borderlands_Common_LIB_INCLUDE_DIR ${BorderlandsSaveEditor_INCLUDE_DIR}/common)
-
 set(Borderlands_Common_LIB_PUBLIC_INCLUDE_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/bl_common_exports.hpp
-        ${Borderlands_Common_LIB_INCLUDE_DIR}/common.hpp
+        ${Borderlands_Common_LIB_INCLUDE_DIR}/common/common.hpp
         )
 
 set(Borderlands_Common_LIB_PRIVATE_INCLUDE_FILES)
@@ -25,12 +23,11 @@ if (WIN32)
     include(generate_product_version)
     generate_product_version(
             Borderlands_Common_LIB_VersionFilesOutputVariable
-            NAME                "BorderlandsSaveEditor_Common"
-            ICON                "${BorderlandsSaveEditor_RESOURCE_DIR}/appicon.ico"
-            VERSION_MAJOR       ${CMAKE_PROJECT_VERSION_MAJOR}
-            VERSION_MINOR       ${CMAKE_PROJECT_VERSION_MINOR}
-            VERSION_PATCH       ${CMAKE_PROJECT_VERSION_TWEAK}
-            VERSION_REVISION    ${CMAKE_PROJECT_VERSION_PATCH}
+            NAME                "Borderlands_Common"
+            VERSION_MAJOR       ${PROJECT_VERSION_MAJOR}
+            VERSION_MINOR       ${PROJECT_VERSION_MINOR}
+            VERSION_PATCH       ${PROJECT_VERSION_TWEAK}
+            VERSION_REVISION    ${PROJECT_VERSION_PATCH}
     )
     set(Borderlands_Common_LIB_RESOURCE_FILES
             ${Borderlands_Common_LIB_RESOURCE_FILES}
@@ -53,6 +50,11 @@ generate_export_header(Borderlands_Common_LIB
         NO_DEPRECATED_MACRO_NAME    BORDERLANDS_COMMON_API_NO_DEPRECATED
         )
 
+target_include_directories(Borderlands_Common_LIB
+        PUBLIC ${Borderlands_Common_LIB_INCLUDE_DIR}
+        PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 target_link_libraries(Borderlands_Common_LIB
         PUBLIC
         Boost::log
@@ -60,7 +62,7 @@ target_link_libraries(Borderlands_Common_LIB
         )
 
 target_compile_options(Borderlands_Common_LIB
-        PUBLIC -DBorderlands_Common_LIB_EXPORTS=1
+        PRIVATE -DBorderlands_Common_LIB_EXPORTS=1
         )
 
 set_target_properties(Borderlands_Common_LIB

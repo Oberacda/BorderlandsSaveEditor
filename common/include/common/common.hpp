@@ -2,7 +2,7 @@
 #pragma once
 #include <rapidjson/document.h>
 
-#include "common/bl_common_exports.hpp"
+#include <bl_common_exports.hpp>
 
 namespace D4v3 {
     /*!

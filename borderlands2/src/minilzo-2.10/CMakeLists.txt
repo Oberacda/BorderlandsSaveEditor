@@ -16,13 +16,14 @@ set(MiniLZO_LIB_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/minilzo.c
         )
 
-add_library(EXTERNAL_MiniLZO_LIB SHARED
+add_library(EXTERNAL_MiniLZO_LIB STATIC
         ${MiniLZO_LIB_HEADER_FILES}
         ${MiniLZO_LIB_SOURCE_FILES}
         )
 
 target_compile_options(EXTERNAL_MiniLZO_LIB
         PRIVATE -DEXTERNAL_MiniLZO_LIB_EXPORTS=1
+        PUBLIC -fPIC
         )
 target_include_directories(EXTERNAL_MiniLZO_LIB
         PUBLIC ${CMAKE_CURRENT_BINARY_DIR}

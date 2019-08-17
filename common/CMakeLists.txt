@@ -8,8 +8,7 @@ project(Borderlands2SaveLib
         VERSION     ${Borderlands_Common_LIB_VERSION}
         DESCRIPTION "Save editing library for Borderlands 2"
         )
-
-        find_package(Boost 1.67 REQUIRED
+find_package(Boost 1.65 REQUIRED
         COMPONENTS
         atomic
         chrono

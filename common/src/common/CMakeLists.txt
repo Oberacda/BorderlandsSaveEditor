@@ -35,7 +35,7 @@ if (WIN32)
             )
 endif (WIN32)
 
-add_library(Borderlands_Common_LIB SHARED
+add_library(Borderlands_Common_LIB STATIC
         ${Borderlands_Common_LIB_SOURCE_FILES}
         ${Borderlands_Common_LIB_INCLUDE_FILES}
         ${Borderlands_Common_LIB_RESOURCE_FILES}
@@ -63,6 +63,7 @@ target_link_libraries(Borderlands_Common_LIB
 
 target_compile_options(Borderlands_Common_LIB
         PRIVATE -DBorderlands_Common_LIB_EXPORTS=1
+        PUBLIC -fPIC
         )
 
 set_target_properties(Borderlands_Common_LIB

@@ -5,7 +5,11 @@
 #include <string>
 #include <map>
 #include <queue>
+
+#include <cstdlib>
+
 #include <boost/dynamic_bitset.hpp>
+
 
 #include "common/common.hpp"
 

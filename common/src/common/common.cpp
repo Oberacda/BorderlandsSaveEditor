@@ -4,6 +4,8 @@
 #include <map>
 #include <queue>
 
+#include <cstring>
+
 #include "common/common.hpp"
 
 void BORDERLANDS_COMMON_API D4v3::Borderlands::Common::Streams::read_uint32(std::istream *stream, uint32_t *num,

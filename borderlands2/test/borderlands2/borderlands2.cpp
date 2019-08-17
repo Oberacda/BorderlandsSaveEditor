@@ -130,7 +130,7 @@ class Borderlands2Test : public ::testing::Test {
 };
 
 TEST_F(Borderlands2Test, VerifySaveFile) {
-    EXPECT_TRUE(verifySave("../../b../resources/76561198034853688/Save0001.sav"));
+    EXPECT_TRUE(verifySave("./borderlands2/resources/76561198034853688/Save0001.sav"));
     //EXPECT_TRUE(verifySave("..\\..\\resources\\76561198034853688\\Save0001.sav"));
 }
 

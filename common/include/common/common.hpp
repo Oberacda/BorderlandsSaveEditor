@@ -1,6 +1,5 @@
 
 #pragma once
-#include <rapidjson/document.h>
 
 #include <bl_common_exports.hpp>
 

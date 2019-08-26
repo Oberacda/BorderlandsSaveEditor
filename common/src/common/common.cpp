@@ -1,3 +1,13 @@
+/**
+ * @file        common.cpp
+ * @author      David Oberacker (david.oberacker@gmail.com)
+ * @brief       Implementation of common stream operations.
+ * @version     0.1
+ * @date        2019-08-26
+ * 
+ * @copyright   Copyright (c) 2019 David Oberacker
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>

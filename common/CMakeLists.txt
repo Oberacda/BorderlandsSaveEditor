@@ -3,7 +3,7 @@ cmake_policy(SET CMP0087 NEW)
 
 set(Borderlands_Common_LIB_VERSION "1.0.0.1")
 
-project(Borderlands2SaveLib
+project(BorderlandsCommon
         LANGUAGES   C CXX
         VERSION     ${Borderlands_Common_LIB_VERSION}
         DESCRIPTION "Save editing library for Borderlands 2"
@@ -23,6 +23,28 @@ find_package(Boost 1.65 REQUIRED
 
 find_package(GTest)
 find_package(Doxygen)
+
+# first we can indicate the documentation build as an option and set it to ON by default
+option(BorderlandsCommon_BUILD_DOC "Build documentation" ON)
+
+if (DOXYGEN_FOUND)
+    # set input and output files
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/resources/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+    # request to configure the file
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    message("Doxygen build started")
+
+    # note the option ALL which allows to build the docs together with the application
+    add_custom_target(Borderlands_Common_LIB_DOC ALL
+        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM )
+else (DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
+endif (DOXYGEN_FOUND)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 

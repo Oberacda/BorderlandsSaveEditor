@@ -8,18 +8,8 @@ project(BorderlandsCommon
         VERSION     ${Borderlands_Common_LIB_VERSION}
         DESCRIPTION "Save editing library for Borderlands 2"
         )
-find_package(Boost 1.65 REQUIRED
-        COMPONENTS
-        atomic
-        chrono
-        date_time
-        filesystem
-        log
-        log_setup
-        system
-        thread
-        regex
-        )
+
+find_package(Boost 1.65 REQUIRED)
 
 find_package(GTest)
 find_package(Doxygen)

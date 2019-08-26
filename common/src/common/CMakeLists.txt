@@ -57,8 +57,7 @@ target_include_directories(Borderlands_Common_LIB
 
 target_link_libraries(Borderlands_Common_LIB
         PUBLIC
-        Boost::log
-        Boost::log_setup
+        Boost::boost
         )
 
 target_compile_options(Borderlands_Common_LIB

@@ -2,6 +2,8 @@
 // Created by David Oberacker on 2019-07-29.
 //
 
+#include <cstring>
+
 #include "borderlands2/borderlands2.hpp"
 #include "borderlands2/WillowTwoPlayerSaveGame.pb.h"
 #include "borderlands2/borderlands2_logger.hpp"
@@ -12,8 +14,9 @@
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/utility/manipulators/add_value.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
+#include <fstream>
+#include <istream>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
 
@@ -36,7 +39,7 @@
  *
  * @return true on success, else otherwise
  */
-bool getDataFromFile(boost::filesystem::ifstream *istream,
+bool getDataFromFile(std::ifstream *istream,
                      uint8_t *checksum, uint64_t checksum_size,
                      uint8_t *data, uint64_t data_size) noexcept(false) {
 
@@ -54,7 +57,7 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
     if ((*istream).rdstate() != 0) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "The previous read operation on the stream failed!";
-        if (((*istream).rdstate() & boost::filesystem::ifstream::eofbit) != 0) {
+        if (((*istream).rdstate() & std::ifstream::eofbit) != 0) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "EOF was encountered while reading " << checksum_size << " bytes!";
         }
@@ -74,15 +77,15 @@ bool getDataFromFile(boost::filesystem::ifstream *istream,
     if (istream_state != 0) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Failed to read: " << data_size << " bytes! Could only read: " << (*istream).gcount() << " bytes!";
-        if ((istream_state & boost::filesystem::ifstream::eofbit) != 0) {
+        if ((istream_state & std::ifstream::eofbit) != 0) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "EOF was encountered!";
         }
-        if ((istream_state & boost::filesystem::ifstream::badbit) != 0) {
+        if ((istream_state & std::ifstream::badbit) != 0) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "BadBit was encountered!";
         }
-        if ((istream_state & boost::filesystem::ifstream::failbit) != 0) {
+        if ((istream_state & std::ifstream::failbit) != 0) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
                 << "FailBit was encountered!";
         }
@@ -106,23 +109,23 @@ bool verifySave(const std::string &path) noexcept(false) {
         return false;
     }
 
-    std::unique_ptr<boost::filesystem::path> save_file = std::make_unique<boost::filesystem::path>(path);
+    std::unique_ptr<std::filesystem::path> save_file = std::make_unique<std::filesystem::path>(path);
 
     if (!save_file->is_absolute()) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Making specified path absolute!";
         try {
-            boost::filesystem::path canonical_path = boost::filesystem::absolute(*(save_file));
+            std::filesystem::path canonical_path = std::filesystem::absolute(*(save_file));
             save_file.reset(nullptr);
-            save_file = std::make_unique<boost::filesystem::path>(canonical_path);
-        } catch (boost::filesystem::filesystem_error &ex) {
+            save_file = std::make_unique<std::filesystem::path>(canonical_path);
+        } catch (std::filesystem::filesystem_error &ex) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error) << ex.what();
             throw std::runtime_error(ex.what());
         }
     }
 
 
-    boost::filesystem::ifstream save_file_stream(*save_file, boost::filesystem::ifstream::in | boost::filesystem::ifstream::binary);
-    size_t size = boost::filesystem::file_size(*save_file) - 20;
+    std::ifstream save_file_stream(*save_file, std::ifstream::in | std::ifstream::binary);
+    size_t size = std::filesystem::file_size(*save_file) - 20;
     auto* checksum = new uint8_t[20];
     memset(checksum, 0, 20);
 
@@ -279,16 +282,16 @@ bool verifySave(const std::string &path) noexcept(false) {
 }
 
 bool isSaveFile(const std::string &path) noexcept(false) {
-    std::unique_ptr<boost::filesystem::path> save_file = std::make_unique<boost::filesystem::path>(path);
+    std::unique_ptr<std::filesystem::path> save_file = std::make_unique<std::filesystem::path>(path);
 
-    if (!boost::filesystem::exists(*(save_file))) {
+    if (!std::filesystem::exists(*(save_file))) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Invalid path specified";
         return false;
     }
 
 
-    if (!boost::filesystem::is_regular_file(*(save_file))) {
+    if (!std::filesystem::is_regular_file(*(save_file))) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error)
             << "Specified path does not lead to a file!";
         return false;
@@ -303,10 +306,10 @@ bool isSaveFile(const std::string &path) noexcept(false) {
     if (!save_file->is_absolute()) {
         BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Making specified path absolute!";
         try {
-            boost::filesystem::path canonical_path = boost::filesystem::absolute(*(save_file));
+            std::filesystem::path canonical_path = std::filesystem::absolute(*(save_file));
             save_file.reset(nullptr);
-            save_file = std::make_unique<boost::filesystem::path>(canonical_path);
-        } catch (boost::filesystem::filesystem_error &ex) {
+            save_file = std::make_unique<std::filesystem::path>(canonical_path);
+        } catch (std::filesystem::filesystem_error &ex) {
             BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::error) << ex.what();
             throw std::runtime_error(ex.what());
         }
@@ -314,9 +317,9 @@ bool isSaveFile(const std::string &path) noexcept(false) {
 
     BOOST_LOG_SEV(D4v3::Borderlands2::borderlands2_logger::get(), D4v3::Borderlands2::severity_level::debug) << "Save file path: " << *save_file;
 
-    boost::filesystem::ifstream save_file_stream(*save_file, boost::filesystem::ifstream::in | boost::filesystem::ifstream::binary);
+    std::ifstream save_file_stream(*save_file, std::ifstream::in | std::ifstream::binary);
 
-    uint64_t size = boost::filesystem::file_size(*save_file) - 20;
+    uint64_t size = std::filesystem::file_size(*save_file) - 20;
 
     auto* checksum = new uint8_t[20];
     memset(checksum, 0, 20);

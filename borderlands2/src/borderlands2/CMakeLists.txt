@@ -108,13 +108,13 @@ target_link_libraries(Borderlands2_Save_LIB
         Boost::atomic
         Boost::chrono
         Boost::date_time
-        Boost::filesystem
         Boost::log
         Boost::log_setup
         Boost::system
         Boost::thread
         Boost::regex
         ${Protobuf_LIBRARIES}
+        stdc++fs
         )
 
 target_compile_options(Borderlands2_Save_LIB

@@ -3,5 +3,10 @@
 		{
 			"path": "/home/david/Documents/Temp/BorderlandsSaveEditor"
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"string": "cpp"
+		}
+	}
 }

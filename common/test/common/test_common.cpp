@@ -1,6 +1,12 @@
-//
-// Created by David Oberacker on 2019-08-02.
-//
+/**
+ * @file        test_common.cpp
+ * @author      David Oberacker (david.oberacker@gmail.com)
+ * @brief       Test source file for the common.hpp functions.
+ * @version     0.1
+ * @date        2019-08-26
+ * 
+ * @copyright Copyright (c) 2019
+ */
 
 #include <gtest/gtest.h>
 #include <common/common.hpp>

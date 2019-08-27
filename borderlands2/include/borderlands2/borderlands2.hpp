@@ -23,5 +23,7 @@ bool BORDERLANDS2_SAVE_LIB_API_NO_EXPORT isSaveFile(const std::string &path) noe
 
 bool BORDERLANDS2_SAVE_LIB_API verifySave(const std::string &path)  noexcept(false);
 
+void BORDERLANDS2_SAVE_LIB_API dumpSaveJson(const std::string& in_path, const std::string& out_path)  noexcept(false);
+
 
 #endif //BORDERLANDS2_SAVE_LIB_BORDERLANDS2_HPP

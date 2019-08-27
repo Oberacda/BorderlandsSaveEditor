@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 
 set(Borderlands2_Save_LIB_TEST_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/borderlands2.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_borderlands2.cpp
         )
 
 add_executable(Borderlands2_Save_LIB_TEST
         ${Borderlands2_Save_LIB_TEST_SOURCE_FILES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_main.cpp
         )
 
 target_link_libraries(Borderlands2_Save_LIB_TEST
@@ -14,8 +14,6 @@ target_link_libraries(Borderlands2_Save_LIB_TEST
         Borderlands2_Save_LIB
         PRIVATE
         GTest::GTest
-        Boost::log
-        Boost::log_setup
         )
 
 set_target_properties(Borderlands2_Save_LIB_TEST

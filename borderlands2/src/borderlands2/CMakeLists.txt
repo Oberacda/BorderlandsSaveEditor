@@ -50,7 +50,6 @@ protobuf_generate_cpp(Borderlands2_Save_LIB_PROTO_SRCS
 
 set(Borderlands2_Save_LIB_PRIVATE_INCLUDE_FILES
         ${Borderlands2_Save_LIB_PROTO_HDRS}
-        ${Borderlands2_Save_LIB_HEADER_DIR}/borderlands2_logger.hpp
         )
 
 set(Borderlands2_Save_LIB_INCLUDE_FILES
@@ -105,21 +104,13 @@ target_link_libraries(Borderlands2_Save_LIB
         EXTERNAL_MiniLZO_LIB
         PRIVATE
         OpenSSL::Crypto
-        Boost::atomic
-        Boost::chrono
-        Boost::date_time
-        Boost::log
-        Boost::log_setup
-        Boost::system
-        Boost::thread
-        Boost::regex
+        Boost::boost
         ${Protobuf_LIBRARIES}
-        stdc++fs
+ #       stdc++fs
         )
 
 target_compile_options(Borderlands2_Save_LIB
         PRIVATE -DBorderlands2_Save_LIB_EXPORTS=1
-        PRIVATE -DBOOST_LOG_DYN_LINK=1
         )
 
 set_target_properties(Borderlands2_Save_LIB

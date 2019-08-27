@@ -24,6 +24,7 @@ if (WIN32)
     generate_product_version(
             Borderlands_Common_LIB_VersionFilesOutputVariable
             NAME                "Borderlands_Common"
+            ICON                ${Borderlands_Common_LIB_RESOURCE_DIR}/appicon.ico
             VERSION_MAJOR       ${PROJECT_VERSION_MAJOR}
             VERSION_MINOR       ${PROJECT_VERSION_MINOR}
             VERSION_PATCH       ${PROJECT_VERSION_TWEAK}
@@ -62,7 +63,6 @@ target_link_libraries(Borderlands_Common_LIB
 
 target_compile_options(Borderlands_Common_LIB
         PRIVATE -DBorderlands_Common_LIB_EXPORTS=1
-        PUBLIC -fPIC
         )
 
 set_target_properties(Borderlands_Common_LIB

@@ -59,3 +59,10 @@ void BORDERLANDS_COMMON_API D4v3::Borderlands::Common::Streams::read_int32(std::
 }
 
 
+int32_t BORDERLANDS_COMMON_API D4v3::Borderlands::Common::Util::uint32_to_int32(uint32_t x) noexcept(false) {
+    if (x <= INT32_MAX)
+        return static_cast<int>(x);
+    if (x >= INT32_MAX)
+        return static_cast<int>(x - INT32_MIN) + INT32_MIN;
+    throw std::runtime_error("Invalid uint32 to int32 conversion!"); // Or whatever else you like
+}

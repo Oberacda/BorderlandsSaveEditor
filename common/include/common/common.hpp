@@ -7,7 +7,7 @@
  *              operations.
  * @version     0.1
  * @date        2019-08-26
- * 
+ *
  * @copyright   Copyright (c) 2019 David Oberacker
  */
 
@@ -25,7 +25,7 @@
  * @brief Namespace for projects by D4v3.
  */
 namespace D4v3 {
-    
+
     /**
      * @brief Namespace for Bordlerands related classes.
      */
@@ -40,10 +40,10 @@ namespace D4v3 {
              * @brief Namespace for function related to Huffman en-/decoding.
              */
             namespace Huffman {
-                
+
                 /*!
                  * @brief Function to decode a huffman encoded array.
-                 * 
+                 *
                  * @param[in] input_array   The array containing the encoded data. This array has to be at least
                  *                          input_size elements.
                  * @param[in] input_size    Lenght of the input array. Has to be greater than 0.
@@ -72,9 +72,9 @@ namespace D4v3 {
                 };
                 /*!
                  * @brief Read a single unsigned 32-bit integer from a std::istream.
-                 * 
+                 *
                  * @param[in] stream    The stream to read the data from.
-                 * @param[out] num      The number read from the stream. 
+                 * @param[out] num      The number read from the stream.
                  *                      This has to be a pointer to a preallocated unsigned integer.
                  * @param[in] endianess The endianess of the data stored in the stream.
                  */
@@ -82,13 +82,17 @@ namespace D4v3 {
 
                 /*!
                  * @brief Read a single signed 32-bit integer from a std::istream.
-                 * 
+                 *
                  * @param[in] stream    The stream to read the data from.
-                 * @param[out] num      The number read from the stream. 
+                 * @param[out] num      The number read from the stream.
                  *                      This has to be a pointer to a preallocated signed integer.
                  * @param[in] endianess The endianess of the data stored in the stream.
                  */
                 void BORDERLANDS_COMMON_API read_int32(std::istream* stream, int32_t* num, D4v3::Borderlands::Common::Streams::Endian endianess) noexcept(false);
+            }
+
+            namespace Util {
+                int32_t BORDERLANDS_COMMON_API uint32_to_int32(uint32_t x) noexcept(false);
             }
         }
     }

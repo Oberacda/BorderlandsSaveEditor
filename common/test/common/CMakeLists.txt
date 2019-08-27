@@ -17,9 +17,10 @@ target_link_libraries(Borderlands_Common_LIB_TEST
 
 set_target_properties(Borderlands_Common_LIB_TEST
         PROPERTIES
-        OUTPUT_NAME     "BorderlandsCommonTest"
-        LANGUAGES       CXX
-        VERSION         "${CMAKE_PROJECT_VERSION}"
+        OUTPUT_NAME         "BorderlandsCommonTest"
+        LANGUAGES           CXX
+        VERSION             "${CMAKE_PROJECT_VERSION}"
+        EXCLUDE_FROM_ALL    TRUE
         )
 
 gtest_discover_tests(Borderlands_Common_LIB_TEST)

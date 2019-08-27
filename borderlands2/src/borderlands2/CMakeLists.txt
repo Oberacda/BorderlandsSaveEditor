@@ -106,8 +106,19 @@ target_link_libraries(Borderlands2_Save_LIB
         OpenSSL::Crypto
         Boost::boost
         ${Protobuf_LIBRARIES}
- #       stdc++fs
         )
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    target_link_libraries(Borderlands2_Save_LIB
+            PRIVATE
+            c++fs
+            )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    target_link_libraries(Borderlands2_Save_LIB
+            PRIVATE
+            stdc++fs
+            )
+endif()
 
 target_compile_options(Borderlands2_Save_LIB
         PRIVATE -DBorderlands2_Save_LIB_EXPORTS=1

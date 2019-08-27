@@ -21,6 +21,7 @@ set_target_properties(Borderlands2_Save_LIB_TEST
         OUTPUT_NAME     "Borderlands2SaveLibTest"
         LANGUAGES       CXX
         VERSION         "${CMAKE_PROJECT_VERSION}"
+        CXX_STANDARD    17
         )
 
 if(WIN32)

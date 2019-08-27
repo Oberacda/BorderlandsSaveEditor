@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "@PROJECT_DESCRIPTION@"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/resources/common_logo.png
+PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/resources/bl2_logo.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -875,7 +875,8 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = 
+EXCLUDE                = @CMAKE_CURRENT_SOURCE_DIR@/src/minilzo-2.10 \
+                         @CMAKE_CURRENT_SOURCE_DIR@/include/minilzo-2.10 \
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

@@ -27,7 +27,7 @@
 namespace D4v3 {
 
     /**
-     * @brief Namespace for Bordlerands related classes.
+     * @brief Namespace for Borderlands related classes.
      */
     namespace Borderlands {
 
@@ -91,7 +91,19 @@ namespace D4v3 {
                 void BORDERLANDS_COMMON_API read_int32(std::istream* stream, int32_t* num, D4v3::Borderlands::Common::Streams::Endian endianess) noexcept(false);
             }
 
+            /*!
+            * @brief Namespace for utility functions
+            */
             namespace Util {
+
+                /**
+                 * @brief Converts a unsigned 32-bit integer into a signed 32-bit integer.
+                 * This conversion prevent problems with unsigned / signed conversion.
+                 *
+                 * @throws std::runtime_error If the unsigned value is bigger than the max value of singned integers.
+                 * @param x The unsigned integer to convert.
+                 * @return The singned integer representation of x.
+                 */
                 int32_t BORDERLANDS_COMMON_API uint32_to_int32(uint32_t x) noexcept(false);
             }
         }

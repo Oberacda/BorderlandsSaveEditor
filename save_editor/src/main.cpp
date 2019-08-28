@@ -4,11 +4,7 @@
 #include <QMainWindow>
 #include <QTranslator>
 
-#include "save_editor/main.h"
-
-#include "common/common.hpp"
-
-
+#include "main.hpp"
 #include "ui_SaveEditor_MainWindow.h"
 
 //static Borderlands::SaveEditor::SaveFile* save;

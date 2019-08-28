@@ -20,9 +20,10 @@ set(BorderlandsSaveEditor_VERSION "1.0.0.1")
 project(BorderlandsSaveEditor
         LANGUAGES    CXX
         VERSION     ${BorderlandsSaveEditor_VERSION}
-        DESCRIPTION "Save editor for Borderlands 3"
+        DESCRIPTION "Save editor infrastructure for Borderlands games"
         )
 enable_testing()
 
 add_subdirectory(common)
 add_subdirectory(borderlands2)
+add_subdirectory(save_editor)

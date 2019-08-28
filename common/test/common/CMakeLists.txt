@@ -6,7 +6,7 @@ set(Borderlands_Common_LIB_TEST_SOURCE_FILES
 
 add_executable(Borderlands_Common_LIB_TEST
         ${Borderlands_Common_LIB_TEST_SOURCE_FILES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/test_main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         )
 
 target_link_libraries(Borderlands_Common_LIB_TEST

@@ -1,2 +1,3 @@
 add_subdirectory(minilzo-2.10)
 add_subdirectory(borderlands2)
+add_subdirectory(verify_save_borderlands2)

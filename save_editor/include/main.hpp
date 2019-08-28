@@ -1,9 +1,12 @@
-/*!
- * @brief This file defines the main method for the application.
+/**
+ * @file        main.hpp
+ * @author      David Oberacker (david.oberacker@gmail.com)
+ * @brief       Borderlands save editor main file.
+ * @details     Main file of the borderlands2 save editor application.
+ * @version     0.1
+ * @date        2019-08-26
  *
- * @author David Oberacker
- *
- * @date 16.07.2019
+ * @copyright   Copyright (c) 2019 David Oberacker
  */
 
 /*!

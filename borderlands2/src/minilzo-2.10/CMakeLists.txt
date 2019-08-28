@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 
 include_directories()
 
-set(MiniLZO_LIB_HEADER_DIR ${Borderlands2_Save_LIB_INCLUDE_DIR}/minilzo-2.10)
+set(MiniLZO_LIB_HEADER_DIR ${Borderlands2_INCLUDE_DIR}/minilzo-2.10)
 
 
 set(MiniLZO_LIB_HEADER_FILES
@@ -27,7 +27,7 @@ target_compile_options(EXTERNAL_MiniLZO_LIB
         )
 target_include_directories(EXTERNAL_MiniLZO_LIB
         PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
-        PUBLIC ${Borderlands2_Save_LIB_INCLUDE_DIR}
+        PUBLIC ${Borderlands2_INCLUDE_DIR}
         )
 
 

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0087 NEW)
 
-set(Borderlands2_Save_LIB_HEADER_DIR ${Borderlands2_Save_LIB_INCLUDE_DIR}/borderlands2)
+set(Borderlands2_Save_LIB_HEADER_DIR ${Borderlands2_INCLUDE_DIR}/borderlands2)
 
 set(Borderlands2_Save_LIB_PUBLIC_INCLUDE_FILES
         ${Borderlands2_Save_LIB_HEADER_DIR}/borderlands2.hpp
         ${CMAKE_CURRENT_BINARY_DIR}/bl2_save_lib_exports.hpp
         )
 
-set(Borderlands2_Save_LIB_PROTO_DIR ${Borderlands2_Save_LIB_RESOURCE_DIR}/protobuf)
+set(Borderlands2_Save_LIB_PROTO_DIR ${Borderlands2_RESOURCE_DIR}/protobuf)
 
 set(Borderlands2_Save_LIB_PROTO_FILES
         ${Borderlands2_Save_LIB_PROTO_DIR}/BankSlot.proto
@@ -95,7 +95,7 @@ generate_export_header(Borderlands2_Save_LIB
         NO_DEPRECATED_MACRO_NAME    BORDERLANDS2_SAVE_LIB_API_NO_DEPRECATED
         )
 target_include_directories(Borderlands2_Save_LIB
-        PUBLIC ${Borderlands2_Save_LIB_INCLUDE_DIR}
+        PUBLIC ${Borderlands2_INCLUDE_DIR}
         PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(Borderlands2_Save_LIB

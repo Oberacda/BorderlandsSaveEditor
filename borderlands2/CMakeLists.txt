@@ -11,6 +11,8 @@ project(Borderlands2SaveLib
 
 find_package(Boost 1.65 REQUIRED)
 find_package(OpenSSL COMPONENTS Crypto REQUIRED)
+find_package(cxxopts REQUIRED)
+
 find_package(GTest)
 find_package(Protobuf REQUIRED)
 
@@ -40,9 +42,9 @@ endif (DOXYGEN_FOUND)
 include_directories(${Protobuf_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
-set(Borderlands2_Save_LIB_INCLUDE_DIR
+set(Borderlands2_INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(Borderlands2_Save_LIB_RESOURCE_DIR
+set(Borderlands2_RESOURCE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/resources
         )
 

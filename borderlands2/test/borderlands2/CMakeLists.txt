@@ -12,6 +12,7 @@ add_executable(Borderlands2_Save_LIB_TEST
 target_link_libraries(Borderlands2_Save_LIB_TEST
         PUBLIC
         Borderlands2_Save_LIB
+        ${Protobuf_LIBRARIES}
         PRIVATE
         GTest::GTest
         )

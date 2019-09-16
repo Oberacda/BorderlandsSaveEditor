@@ -63,6 +63,7 @@ target_link_libraries(Borderlands_Common_LIB
 
 target_compile_options(Borderlands_Common_LIB
         PRIVATE -DBorderlands_Common_LIB_EXPORTS=1
+        PUBLIC  -fPIC
         )
 
 set_target_properties(Borderlands_Common_LIB

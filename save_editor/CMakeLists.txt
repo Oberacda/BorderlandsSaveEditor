@@ -33,7 +33,7 @@ if (DOXYGEN_FOUND)
     message("Doxygen build started")
 
     # note the option ALL which allows to build the docs together with the application
-    add_custom_target(Borderlands_SaveEditor_EXE_DOC ALL
+    add_custom_target(Borderlands_SaveEditor_EXE_DOC
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation with Doxygen"

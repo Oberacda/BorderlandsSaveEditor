@@ -263,16 +263,29 @@ namespace D4v3::Borderlands::Borderlands2 {
         memset(innerUncompressedBytes, 0, innerUncompressedSize);
 
         if(!D4v3::Borderlands::Common::Huffman::decode(innerCompressedBytes, innerCompressedSize, innerUncompressedBytes, innerUncompressedSize)) {
+            delete[] innerCompressedBytes;
+            innerCompressedBytes = nullptr;
+
+            delete[] innerUncompressedBytes;
+            innerUncompressedBytes = nullptr;
+
             exception_message_stream
                     << "Huffman decoding failed!";
             throw std::runtime_error(exception_message_stream.str());
         };
+        delete[] innerCompressedBytes;
+        innerCompressedBytes = nullptr;
 
         if(!(*save_game).ParseFromArray(innerUncompressedBytes, innerUncompressedSize)) {
+            delete[] innerUncompressedBytes;
+            innerUncompressedBytes = nullptr;
+
             exception_message_stream
                     << "Protobuf deserialization failed!";
             throw std::runtime_error(exception_message_stream.str());
         }
+        delete[] innerUncompressedBytes;
+        innerUncompressedBytes = nullptr;
     }
 
 }
@@ -283,6 +296,7 @@ bool BORDERLANDS2_SAVE_LIB_API D4v3::Borderlands::Borderlands2::verifySave(const
     auto save_game = std::make_unique<WillowTwoPlayerSaveGame>();
 
     loadSave(path, save_game);
+    save_game.reset(nullptr);
 
     return true;
 }

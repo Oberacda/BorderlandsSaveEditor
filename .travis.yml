@@ -41,7 +41,7 @@ install:
   - sudo rm -r kcov-master
   - wget https://github.com/jarro2783/cxxopts/archive/v2.2.0.tar.gz
   - tar xzf v2.2.0.tar.gz
-  - cd v2.2.0
+  - cd cxxopts-2.2.0
   - mkdir build
   - cd build
   - /usr/local/bin/cmake -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ..

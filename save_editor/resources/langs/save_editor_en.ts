@@ -6,77 +6,77 @@
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="38"/>
         <source>Borderlands Save Editor</source>
-        <translation>Borderlands Save Editor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="91"/>
         <source>General</source>
-        <translation>General</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="97"/>
         <source>Test</source>
-        <translation>Test</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="115"/>
         <source>Backpack</source>
-        <translation>Backpack</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="120"/>
         <source>Bank</source>
-        <translation>Bank</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="125"/>
         <source>Character</source>
-        <translation>Character</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="130"/>
         <source>Currency</source>
-        <translation>Currency</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="135"/>
         <source>Fast Travel</source>
-        <translation>Fast Travel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="140"/>
         <source>Raw</source>
-        <translation>Raw</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="145"/>
         <source>About</source>
-        <translation>About</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="163"/>
         <source>File</source>
-        <translation>File</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="176"/>
         <source>Open</source>
-        <translation>Open</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="181"/>
         <source>Save</source>
-        <translation>Save</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="186"/>
         <source>Save As ...</source>
-        <translation>Save As ...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SaveEditor_MainWindow.ui" line="191"/>
         <source>Exit</source>
-        <translation>Exit</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

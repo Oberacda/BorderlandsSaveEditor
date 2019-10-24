@@ -97,71 +97,13 @@ namespace D4v3::Borderlands::Borderlands2 {
         data_read = nullptr;
     }
 
-    void BORDERLANDS2_SAVE_LIB_API_NO_EXPORT loadSave(const std::string& path,
-                                                      std::unique_ptr<WillowTwoPlayerSaveGame>& save_game) noexcept(false) {
-        std::ostringstream exception_message_stream;
-
-        if(!save_game) {
-            throw std::invalid_argument("The given pointer to the save game is invalid!");
-        }
-
-        if (!D4v3::Borderlands::Borderlands2::isSaveFile(path)) {
-            throw std::invalid_argument("Specified path is invalid! It does not point to a "
-                                        "valid save file or the save file ist corrupted!");
-        }
-
-        std::unique_ptr<std::filesystem::path> save_file = std::make_unique<std::filesystem::path>(path);
-
-        if (!save_file->is_absolute()) {
-            try {
-                std::filesystem::path canonical_path = std::filesystem::absolute(*(save_file));
-                save_file.reset(nullptr);
-                save_file = std::make_unique<std::filesystem::path>(canonical_path);
-            } catch (std::filesystem::filesystem_error &ex) {
-                throw std::runtime_error(ex.what());
-            }
-        }
-
-
-        std::ifstream save_file_stream(*save_file, std::ifstream::in | std::ifstream::binary);
-        size_t size = std::filesystem::file_size(*save_file) - 20;
-        auto* checksum = new uint8_t[20];
-        memset(checksum, 0, 20);
-
-        auto* data = new uint8_t[size];
-        memset(data, 0, size);
-
-        try {
-            getDataFromFile(&save_file_stream, checksum, 20, data, size);
-        } catch (std::runtime_error& exc) {
-            exception_message_stream
-                    << "Read access to the given file failes! "
-                    << exc.what();
-            throw std::runtime_error(exception_message_stream.str());
-        }
-
-        save_file_stream.close();
-        save_file.reset(nullptr);
-
-        delete[] checksum;
-        checksum = nullptr;
-
-        size_t uncompressed_size = 0;
-        uncompressed_size = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
-
-        auto* uncompressed_data = new unsigned char[uncompressed_size];
-        memset(uncompressed_data, 0, uncompressed_size);
-
-        size_t compressed_size = size - 4;
-        auto* compressed_data = new unsigned char[compressed_size];
-        memset(compressed_data, 0, compressed_size);
-        memcpy(compressed_data, data + 4, compressed_size);
-
-        delete[] data;
-        data = nullptr;
-
-
-        switch (lzo1x_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
+    void BORDERLANDS2_SAVE_LIB_API_NO_EXPORT decompress_lzo(
+        unsigned char* compressed_data,
+        size_t compressed_size,
+        unsigned char* uncompressed_data,
+        size_t uncompressed_size ) noexcept(false) {
+            std::ostringstream exception_message_stream;
+            switch (lzo1x_decompress_safe(compressed_data, compressed_size, uncompressed_data, &uncompressed_size, nullptr)) {
             case LZO_E_OK:
                 break;
             case LZO_E_OUT_OF_MEMORY:
@@ -215,23 +157,86 @@ namespace D4v3::Borderlands::Borderlands2 {
                         << " Failure at byte: " << uncompressed_size;
                 throw std::runtime_error(exception_message_stream.str());
         }
+    }
+
+    void BORDERLANDS2_SAVE_LIB_API_NO_EXPORT loadSave(const std::string& path,
+                                                      WillowTwoPlayerSaveGame* save_game) noexcept(false) {
+        std::ostringstream exception_message_stream;
+
+        if(save_game == nullptr) {
+            throw std::invalid_argument("The given pointer to the save game is invalid!");
+        }
+
+        if (!D4v3::Borderlands::Borderlands2::isSaveFile(path)) {
+            throw std::invalid_argument("Specified path is invalid! It does not point to a "
+                                        "valid save file or the save file ist corrupted!");
+        }
+
+        std::unique_ptr<std::filesystem::path> save_file = std::make_unique<std::filesystem::path>(path);
+
+        if (!save_file->is_absolute()) {
+            try {
+                std::filesystem::path canonical_path = std::filesystem::absolute(*(save_file));
+                save_file.reset(nullptr);
+                save_file = std::make_unique<std::filesystem::path>(canonical_path);
+            } catch (std::filesystem::filesystem_error &ex) {
+                throw std::runtime_error(ex.what());
+            }
+        }
 
 
-        //Freeing compressed data space.
-        delete[] compressed_data;
-        compressed_data = nullptr;
+        std::ifstream save_file_stream(*save_file, std::ifstream::in | std::ifstream::binary);
+        size_t size = std::filesystem::file_size(*save_file) - 20;
+        auto checksum_ptr = std::make_unique<uint8_t []>(20);
+        memset(checksum_ptr.get(), 0, 20);
 
-        auto* uncompressed_data_char = reinterpret_cast<char *>(uncompressed_data);
+        auto data_ptr = std::make_unique<uint8_t []>(size);
+        memset(data_ptr.get(), 0, size);
 
+        try {
+            getDataFromFile(&save_file_stream, checksum_ptr.get(), 20, data_ptr.get(), size);
+        } catch (std::runtime_error& exc) {
+            exception_message_stream
+                    << "Read access to the given file failes! "
+                    << exc.what();
+            throw std::runtime_error(exception_message_stream.str());
+        }
 
-        boost::interprocess::bufferstream input_stream(uncompressed_data_char, uncompressed_size);
+        save_file_stream.close();
+        save_file.reset(nullptr);
+
+        checksum_ptr.reset(nullptr);
+
+        size_t uncompressed_size = 0;
+        uncompressed_size = data_ptr[0] << 24 | data_ptr[1] << 16 | data_ptr[2] << 8 | data_ptr[3];
+
+        auto uncompressed_data_ptr = std::make_unique<unsigned char []>(uncompressed_size);
+        memset(uncompressed_data_ptr.get(), 0, uncompressed_size);
+
+        size_t compressed_size = size - 4;
+        auto compressed_data_ptr = std::make_unique<unsigned char []>(compressed_size);
+        memset(compressed_data_ptr.get(), 0, compressed_size);
+        memcpy(compressed_data_ptr.get(), data_ptr.get() + 4, compressed_size);
+
+        data_ptr.reset(nullptr);
+
+        decompress_lzo(compressed_data_ptr.get(), compressed_size, uncompressed_data_ptr.get(), uncompressed_size);
+
+        compressed_data_ptr.reset(nullptr);
+
+        auto* uncompressed_char_data = reinterpret_cast<char *>(uncompressed_data_ptr.release());
+        auto uncompressed_char_data_ptr = std::unique_ptr<char []>(uncompressed_char_data);
+        uncompressed_char_data = nullptr;
+
+        boost::interprocess::bufferstream input_stream(uncompressed_char_data_ptr.get(), uncompressed_size);
+        
 
         uint32_t innerSize = 0;
         D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &innerSize, D4v3::Borderlands::Common::Streams::Endian::big_endian);
 
-        char magicNumber[3];
-        memset(magicNumber, 0 ,3);
-        input_stream.read(magicNumber, 3);
+        char magic_number[3];
+        memset(magic_number, 0 ,3);
+        input_stream.read(magic_number, 3);
 
         uint32_t version = 0;
         D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &version, D4v3::Borderlands::Common::Streams::Endian::little_endian);
@@ -246,139 +251,43 @@ namespace D4v3::Borderlands::Borderlands2 {
         uint32_t hash;
         D4v3::Borderlands::Common::Streams::read_uint32(&input_stream, &hash, endianess);
 
-        int32_t innerUncompressedSize = 0;
-        D4v3::Borderlands::Common::Streams::read_int32(&input_stream, &innerUncompressedSize, endianess);
+        int32_t inner_uncompressed_size = 0;
+        D4v3::Borderlands::Common::Streams::read_int32(&input_stream, &inner_uncompressed_size, endianess);
 
-        int innerCompressedSize = D4v3::Borderlands::Common::Util::uint32_to_int32(innerSize) - 3 - 4 - 4 - 4;
+        int inner_compressed_size = D4v3::Borderlands::Common::Util::uint32_to_int32(innerSize) - 3 - 4 - 4 - 4;
 
-        char* innerCompressedBytes = new char [innerCompressedSize];
-        memset(innerCompressedBytes, 0, innerCompressedSize);
-        input_stream.read(innerCompressedBytes, innerCompressedSize);
+        auto inner_compressed_bytes_ptr = std::make_unique<char []>(inner_compressed_size);
+        memset(inner_compressed_bytes_ptr.get(), 0, inner_compressed_size);
+        input_stream.read(inner_compressed_bytes_ptr.get(), inner_compressed_size);
 
-        delete[] uncompressed_data;
-        uncompressed_data = nullptr;
-        uncompressed_data_char = nullptr;
+        uncompressed_char_data_ptr.reset(nullptr);
 
-        char* innerUncompressedBytes = new char[innerUncompressedSize];
-        memset(innerUncompressedBytes, 0, innerUncompressedSize);
+        auto inner_uncompressed_bytes_ptr = std::make_unique<char []>(inner_uncompressed_size);
+        memset(inner_uncompressed_bytes_ptr.get(), 0, inner_uncompressed_size);
 
-        if(!D4v3::Borderlands::Common::Huffman::decode(innerCompressedBytes, innerCompressedSize, innerUncompressedBytes, innerUncompressedSize)) {
-            delete[] innerCompressedBytes;
-            innerCompressedBytes = nullptr;
+        if(!D4v3::Borderlands::Common::Huffman::decode(inner_compressed_bytes_ptr.get(), inner_compressed_size, inner_uncompressed_bytes_ptr.get(), inner_uncompressed_size)) {
+            inner_compressed_bytes_ptr.reset(nullptr);
 
-            delete[] innerUncompressedBytes;
-            innerUncompressedBytes = nullptr;
+            inner_uncompressed_bytes_ptr.reset(nullptr);
 
             exception_message_stream
                     << "Huffman decoding failed!";
             throw std::runtime_error(exception_message_stream.str());
         };
-        delete[] innerCompressedBytes;
-        innerCompressedBytes = nullptr;
+        inner_compressed_bytes_ptr.reset(nullptr);
 
-        if(!(*save_game).ParseFromArray(innerUncompressedBytes, innerUncompressedSize)) {
-            delete[] innerUncompressedBytes;
-            innerUncompressedBytes = nullptr;
+        if(!(*save_game).ParseFromArray(inner_uncompressed_bytes_ptr.get(), inner_uncompressed_size)) {
+            inner_uncompressed_bytes_ptr.reset(nullptr);
 
             exception_message_stream
                     << "Protobuf deserialization failed!";
             throw std::runtime_error(exception_message_stream.str());
         }
-        delete[] innerUncompressedBytes;
-        innerUncompressedBytes = nullptr;
+        inner_uncompressed_bytes_ptr.reset(nullptr);
     }
 
-}
-
-
-bool BORDERLANDS2_SAVE_LIB_API D4v3::Borderlands::Borderlands2::verifySave(const std::string &path) noexcept(false) {
-
-    auto save_game = std::make_unique<WillowTwoPlayerSaveGame>();
-
-    loadSave(path, save_game);
-    save_game.reset(nullptr);
-
-    return true;
-}
-
-bool BORDERLANDS2_SAVE_LIB_API_NO_EXPORT D4v3::Borderlands::Borderlands2::isSaveFile(const std::string &path) noexcept(false) {
-    std::ostringstream exception_message_stream;
-    std::unique_ptr<std::filesystem::path> save_file = std::make_unique<std::filesystem::path>(path);
-
-    if (!std::filesystem::exists(*(save_file))) {
-        exception_message_stream
-            << "Invalid path specified";
-        return false;
-    }
-
-
-    if (!std::filesystem::is_regular_file(*(save_file))) {
-        return false;
-    }
-
-    if ((save_file->extension().generic_string() != ".sav")) {
-        return false;
-    }
-
-    if (!save_file->is_absolute()) {
-        try {
-            std::filesystem::path canonical_path = std::filesystem::absolute(*(save_file));
-            save_file.reset(nullptr);
-            save_file = std::make_unique<std::filesystem::path>(canonical_path);
-        } catch (std::filesystem::filesystem_error &ex) {
-            throw std::runtime_error(ex.what());
-        }
-    }
-
-    std::ifstream save_file_stream(*save_file, std::ifstream::in | std::ifstream::binary);
-
-    uint64_t size = std::filesystem::file_size(*save_file) - 20;
-
-    auto* checksum = new uint8_t[20];
-    memset(checksum, 0, 20);
-
-    auto* data = new uint8_t[size];
-    memset(data, 0, size);
-
-    try {
-        getDataFromFile(&save_file_stream, checksum, 20, data, size);
-    } catch (std::runtime_error& exc) {
-        exception_message_stream
-                << "Error getting data and checksum from file: " << *save_file << "! "
-                << exc.what();
-        return false;
-    }
-
-    auto* checksum_data = new uint8_t[20];
-    memset(checksum_data, 0, 20);
-
-    SHA1(data, size, checksum_data);
-
-    for (int i = 0; i < 20; ++i) {
-        if (checksum[i] != checksum_data[i]) {
-            exception_message_stream
-                << "SHA1 checksum invalid: Byte " << i
-                << " is not equal: Checksum(Data): " << std::hex << checksum_data[i] << " <-> "
-                << "Checksum: " << std::hex << checksum[i];
-            return false;
-        }
-    }
-
-    delete[] data;
-    data = nullptr;
-    delete[] checksum;
-    checksum = nullptr;
-    delete[] checksum_data;
-    checksum_data = nullptr;
-
-    save_file_stream.close();
-    save_file.reset(nullptr);
-
-    return true;
-}
-
-void BORDERLANDS2_SAVE_LIB_API
-D4v3::Borderlands::Borderlands2::dumpSaveJson(const std::string& in_path, const std::string& out_path) noexcept(false) {
+    void BORDERLANDS2_SAVE_LIB_API
+dumpSaveJson(const std::string& in_path, const std::string& out_path) noexcept(false) {
     auto out_save_file = std::make_unique<std::filesystem::path>(out_path);
 
     if (std::filesystem::exists(*(out_save_file))) {
@@ -396,7 +305,7 @@ D4v3::Borderlands::Borderlands2::dumpSaveJson(const std::string& in_path, const 
 
     auto save_game = std::make_unique<WillowTwoPlayerSaveGame>();
 
-    loadSave(in_path, save_game);
+    loadSave(in_path, save_game.get());
 
     auto* json_string = new std::string();
     google::protobuf::util::JsonPrintOptions print_options;
@@ -412,4 +321,91 @@ D4v3::Borderlands::Borderlands2::dumpSaveJson(const std::string& in_path, const 
     save_game.reset(nullptr);
     delete json_string;
 }
+
+bool BORDERLANDS2_SAVE_LIB_API verifySave(const std::string &path) noexcept(false) {
+
+    auto save_game = std::make_unique<WillowTwoPlayerSaveGame>();
+
+    loadSave(path, save_game.get());
+    save_game.reset(nullptr);
+
+    return true;
+}
+
+bool BORDERLANDS2_SAVE_LIB_API_NO_EXPORT isSaveFile(const std::string &path) noexcept(false) {
+    std::ostringstream exception_message_stream;
+    std::filesystem::path save_file(path);
+
+    if (!save_file.is_absolute()) {
+        try {
+            save_file = std::filesystem::absolute(save_file);
+        } catch (std::filesystem::filesystem_error &ex) {
+            throw std::runtime_error(ex.what());
+        }
+    }
+
+    if (!std::filesystem::exists(save_file)) {
+        exception_message_stream
+            << "Invalid path specified";
+        return false;
+    }
+
+
+    if (!std::filesystem::is_regular_file(save_file)) {
+        return false;
+    }
+
+    if ((save_file.extension().generic_string() != ".sav")) {
+        return false;
+    }
+
+    
+
+    std::ifstream save_file_stream(save_file, std::ifstream::in | std::ifstream::binary);
+
+    uint64_t size = std::filesystem::file_size(save_file) - 20;
+
+    auto checksum_ptr = std::make_unique<uint8_t []>(20);
+    memset(checksum_ptr.get(), 0, 20);
+
+    auto data_ptr = std::make_unique<uint8_t []>(size);
+    memset(data_ptr.get(), 0, size);
+
+    try {
+        getDataFromFile(&save_file_stream, checksum_ptr.get(), 20, data_ptr.get(), size);
+    } catch (std::runtime_error& exc) {
+        exception_message_stream
+                << "Error getting data and checksum from file: " << save_file << "! "
+                << exc.what();
+        return false;
+    }
+
+    auto checksum_data_ptr = std::make_unique<uint8_t []>(20);
+    memset(checksum_data_ptr.get(), 0, 20);
+
+    SHA1(data_ptr.get(), size, checksum_data_ptr.get());
+
+    for (int i = 0; i < 20; ++i) {
+        if (checksum_ptr[i] != checksum_data_ptr[i]) {
+            exception_message_stream
+                << "SHA1 checksum invalid: Byte " << i
+                << " is not equal: Checksum(Data): " << std::hex << checksum_data_ptr[i] << " <-> "
+                << "Checksum: " << std::hex << checksum_ptr[i];
+            return false;
+        }
+    }
+
+    data_ptr.reset(nullptr);
+    checksum_ptr.reset(nullptr);
+    checksum_data_ptr.reset(nullptr);
+
+    save_file_stream.close();
+
+    return true;
+}
+}
+
+
+
+
 

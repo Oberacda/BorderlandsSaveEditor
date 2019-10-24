@@ -109,10 +109,13 @@ target_link_libraries(Borderlands2_Save_LIB
         )
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    target_link_libraries(Borderlands2_Save_LIB
-            PRIVATE
-            c++fs
-            )
+    #    target_compile_options(Borderlands2_Save_LIB
+    #        PUBLIC -stdlib=libc++
+    #    )
+    #    target_link_libraries(Borderlands2_Save_LIB
+    #        PRIVATE
+    #        c++fs
+    #        )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(Borderlands2_Save_LIB
             PRIVATE
@@ -132,6 +135,7 @@ set_target_properties(Borderlands2_Save_LIB
         PRIVATE_HEADERS "${Borderlands2_Save_LIB_PRIVATE_INCLUDE_FILES}"
         VERSION         "${PROJECT_VERSION}"
         CXX_STANDARD    17
+        CXX_EXTENSIONS  OFF
         )
 
 install(TARGETS Borderlands2_Save_LIB

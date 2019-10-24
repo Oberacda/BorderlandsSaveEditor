@@ -32,7 +32,7 @@ install:
   - cd kcov-master
   - mkdir build
   - cd build
-  - /usr/local/bin/cmake -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8..
+  - /usr/local/bin/cmake -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ..
   - make
   # puts kcov in the default location usually /usr/local/bin/kcov
   - sudo make install

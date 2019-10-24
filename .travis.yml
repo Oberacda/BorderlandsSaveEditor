@@ -15,6 +15,7 @@ addons:
       - doxygen
       - qt5-default
       - qttools5-dev-tools
+      - qttools5-dev
       - libqt5gui5
       - libprotobuf-dev
       - protobuf-compiler

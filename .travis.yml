@@ -75,5 +75,5 @@ script:
 after_success:
   - ls -l
   - mkdir cov
-  - /usr/local/bin/kcov --exclude-path=/usr/ --exclude-pattern=.pb.,minilzo,autogen --coveralls-id=$TRAVIS_JOB_ID  cov/ ./bin/Borderlands2SaveLibTest
+  - /usr/local/bin/kcov --exclude-path=/usr/ --exclude-pattern=.pb.,minilzo,autogen,test --coveralls-id=$TRAVIS_JOB_ID  cov/ ./bin/Borderlands2SaveLibTest
   - ls -l cov

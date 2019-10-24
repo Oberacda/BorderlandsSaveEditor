@@ -32,7 +32,7 @@ install:
   - mkdir dependencies
   - cd dependencies
   - wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz
-  - tar xzf googletest-release-1.10.0.tar.gz
+  - tar xzf release-1.10.0.tar.gz
   - cd googletest-release-1.10.0
   - mkdir build
   - cd build

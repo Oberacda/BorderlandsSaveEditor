@@ -36,6 +36,8 @@ install:
   - make
   # puts kcov in the default location usually /usr/local/bin/kcov
   - sudo make install
+  - cd ../..
+  - sudo rm -r kcov-master
 
 script:
   - mkdir build

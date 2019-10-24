@@ -14,11 +14,14 @@ set(Borderlands_SaveEditor_EXE_RESOURCE_FILES
         )
 
 # Using a source directory:
-file(GLOB TS_FILES "${Borderlands_SaveEditor_EXE_RESOURCE_DIR}/langs/*.ts")
+set(Borderlands_SaveEditor_EXE_TRANSLATION_FILE
+        ${Borderlands_SaveEditor_EXE_RESOURCE_DIR}/langs/save_editor_de.ts
+        ${Borderlands_SaveEditor_EXE_RESOURCE_DIR}/langs/save_editor_en.ts
+        )
 
 qt5_create_translation(QM_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${TS_FILES}
+        ${Borderlands_SaveEditor_EXE_TRANSLATION_FILE}
         )
 
 configure_file(

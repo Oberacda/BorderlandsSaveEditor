@@ -117,14 +117,13 @@ int64_t decodeNode(const boost::dynamic_bitset<>& data, int64_t* offset, Node* t
 bool BORDERLANDS_COMMON_API
 D4v3::Borderlands::Common::Huffman::decode(const char *input_array, uint32_t input_size, char *output_array,
                                            int32_t output_size) noexcept(false) {
-    auto* bitArray = new boost::dynamic_bitset<>(input_size * 8);
-    convertBytesToBits(input_array, input_size, bitArray);
+    auto bitArray = std::make_unique<boost::dynamic_bitset<>>(input_size * 8);
+    convertBytesToBits(input_array, input_size, bitArray.get());
 
-    auto* tree = new Node[511];
+    auto tree = std::make_unique<Node []>(511);
     int64_t index = 0;
     int64_t offset = 0;
-
-    decodeNode(*bitArray, &offset, tree, &index);
+    decodeNode(*bitArray, &offset, tree.get(), &index);
 
     int32_t left = output_size;
 
@@ -140,9 +139,6 @@ D4v3::Borderlands::Common::Huffman::decode(const char *input_array, uint32_t inp
         output_array[o++] = branch.Symbol;
         left--;
     }
-
-    delete[] tree;
-    delete bitArray;
 
     return true;
 }

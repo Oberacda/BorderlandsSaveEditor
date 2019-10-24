@@ -53,10 +53,9 @@ target_link_libraries(Borderlands2_VerifySave_EXE
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     #    target_link_libraries(Borderlands2_VerifySave_EXE
-    #       PRIVATE
-    #       c++fs
-    #       )
-
+#            PRIVATE
+#            c++fs
+#            )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(Borderlands2_VerifySave_EXE
             PRIVATE

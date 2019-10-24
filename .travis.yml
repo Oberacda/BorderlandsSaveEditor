@@ -68,10 +68,12 @@ install:
 script:
   - mkdir build
   - cd build
-  - /usr/local/bin/cmake -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ..
+  - /usr/local/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ..
   - make -j4
   - ./bin/Borderlands2SaveLibTest
 
 after_success:
+  - ls -l
   - mkdir cov
-  - /usr/local/bin/kcov --exclude-path=/usr/ --exclude-pattern=.pb.,minilzo,autogen --coveralls-id=$TRAVIS_JOB_ID  --verify cov/ bin/Borderlands2SaveLibTest
+  - /usr/local/bin/kcov --exclude-path=/usr/ --exclude-pattern=.pb.,minilzo,autogen --coveralls-id=$TRAVIS_JOB_ID  cov/ ./bin/Borderlands2SaveLibTest
+  - ls -l cov

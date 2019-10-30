@@ -9,6 +9,9 @@
 class Borderlands2Test : public ::testing::Test {
     public:
 
+    D4v3::Borderlands::Borderlands2::Borderlands2_Save_File save_file = D4v3::Borderlands::Borderlands2::Borderlands2_Save_File(
+            "./borderlands2/resources/76561198034853688/Save0001.sav");
+
     Borderlands2Test() {
     }
 
@@ -32,18 +35,17 @@ class Borderlands2Test : public ::testing::Test {
 };
 
 TEST_F(Borderlands2Test, VerifySaveFile) {
-    EXPECT_TRUE(D4v3::Borderlands::Borderlands2::verifySave("../borderlands2/resources/76561198034853688/Save0001.sav"));
+    EXPECT_TRUE(save_file.verifySave());
 }
 
 TEST_F(Borderlands2Test, InvalidPath) {
-    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::verifySave("./../resources/76561198034853688/Save0001.sav"));
+    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::Borderlands2_Save_File("./../resources/76561198034853688/Save0001.sav"));
 }
 
 TEST_F(Borderlands2Test, InvalidPath_InvalidChars) {
-    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::verifySave("..//../resources/76561198034853688/Save0001.sav"));
+    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::Borderlands2_Save_File("..//../resources/76561198034853688/Save0001.sav"));
 }
 
 TEST_F(Borderlands2Test, DISABLED_DumpJson) {
-    EXPECT_NO_THROW(D4v3::Borderlands::Borderlands2::dumpSaveJson("../borderlands2/resources/76561198034853688/Save0001.sav", "./Save0001.dump.json"));
-    EXPECT_NO_THROW(D4v3::Borderlands::Borderlands2::dumpSaveJson("../borderlands2/resources/76561198034853688/Save0007.sav", "./Save0007.dump.json"));
+    EXPECT_NO_THROW(save_file.dumpSave("./Save0001.dump.json"));
 }

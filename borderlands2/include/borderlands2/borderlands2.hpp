@@ -15,7 +15,10 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
+
 #include "bl2_save_lib_exports.hpp"
+#include "WillowTwoPlayerSaveGame.pb.h"
 
 /**
  * @namespace D4v3
@@ -34,41 +37,81 @@
 
 namespace D4v3::Borderlands::Borderlands2 {
 
-            /*!
-             * @brief Checks if the file at a specific path is a valid Borderlands2 save file.
-             *
-             * @details This method checks if the file is a regular file with the '.sav' extension and the
-             *  SHA1 checksum at the beginning of the file is correct.
-             *
-             *  @throws std::runtime_error If there is a filesystem error this exception is thrown.
-             *
-             * @param path The input path to check the file at.
-             * @return true iff the file is a save file, else false.
-             */
-            bool BORDERLANDS2_SAVE_LIB_API_NO_EXPORT isSaveFile(const std::string &path) noexcept(false);
+            class BORDERLANDS2_SAVE_LIB_API Borderlands2_Save_File {
+            private:
+                std::unique_ptr<WillowTwoPlayerSaveGame> playerSaveGamePtr;
 
-            /**
-             * Function to verify a Borderlands2 save file.
-             *
-             * @throws std::runtime_error If there is a filesystem error this exception is thrown.
-             *
-             * @param path Input path to the save file. This has to be a valid file path in the current filesystem.
-             *  Escaped characters have to be escaped in the string.
-             *
-             * @return true Iff the save file is valid.
-             * @return false Iff the save file is invalid.
-             */
-            bool BORDERLANDS2_SAVE_LIB_API verifySave(const std::string &path)  noexcept(false);
+                static void decompress_lzo(
+                        unsigned char *compressed_data,
+                        size_t compressed_size,
+                        unsigned char *uncompressed_data,
+                        size_t uncompressed_size
+                ) noexcept(false);
 
-            /**
-             * @brief Dumps the content of a Borderlands2 savefile as a json file to the specified output path.
-             *
-             * @param in_path Input path to the save file. This has to be a valid file path in the current filesystem.
-             *  Escaped characters have to be escaped in the string. This has to point to a file.
-             * @param out_path Output path to the json file. This has to be a valid file path in the current filesystem.
-             *  Escaped characters have to be escaped in the string. This has to point to a file.
-             */
-            void BORDERLANDS2_SAVE_LIB_API dumpSaveJson(const std::string& in_path, const std::string& out_path)  noexcept(false);
+                /*!
+                 * @brief Gets the data and the checksum from a input file stream.
+                 *
+                 * The checksum are always the first checksum_size bytes of the file and data are the data_size bytes following.
+                 * @param[in] istream The file stream to read from! If this is invalid the function throws a error.
+                 * @param[out] checksum A pointer to the start of a array that will contain the checksum. The array has to be preallocated with size == checksum_size.
+                 * @param[in] checksum_size The size of the checksum. For SHA sums this should be 20.
+                 * @param[out] data A pointer to the start of a array that will contain the data. The array has to be preallocated with size == data_size.
+                 * @param[in] data_size The size of the data.
+                 *
+                 * @throw std::invalid_argument If the given input stream is not accessible this exception is thrown.
+                 *
+                 * @return true on success, else otherwise
+                 */
+                static void getDataFromFile(
+                        std::ifstream *istream,
+                        uint8_t *checksum,
+                        uint64_t checksum_size,
+                        uint8_t *data,
+                        uint64_t data_size
+                ) noexcept(false);
+
+                /*!
+                 * @brief Checks if the file at a specific path is a valid Borderlands2 save file.
+                 *
+                 * @details This method checks if the file is a regular file with the '.sav' extension and the
+                 *  SHA1 checksum at the beginning of the file is correct.
+                 *
+                 * @throws std::runtime_error If there is a filesystem error this exception is thrown.
+                 *
+                 * @param path The input path to check the file at.
+                 * @return true iff the file is a save file, else false.
+                 */
+                static bool isSaveFile(const std::string &path) noexcept(false);
+
+                static void loadSaveFile(const std::string &path, WillowTwoPlayerSaveGame *save_game) noexcept(false);
+
+            public:
+                Borderlands2_Save_File(const std::string &path) noexcept(false);
+
+                [[nodiscard]] WillowTwoPlayerSaveGame *const getPlayerSaveGamePtr() const;
+
+                /**
+                 * Function to verify a Borderlands2 save file.
+                 *
+                 * @throws std::runtime_error If there is a filesystem error this exception is thrown.
+                 *
+                 * @return true Iff the save file is valid.
+                 * @return false Iff the save file is invalid.
+                 */
+                bool verifySave() noexcept(false);
+
+                /**
+                 * @brief Dumps the content of a Borderlands2 savefile as a json file to the specified output path.
+                 *
+                 * @param out_path Output path to the json file. This has to be a valid file path in the current filesystem.
+                 *  Escaped characters have to be escaped in the string. This has to point to a file.
+                 */
+                void dumpSave(const std::string& out_path) noexcept(false);
+
+                bool operator==(const Borderlands2_Save_File &rhs) const;
+
+                bool operator!=(const Borderlands2_Save_File &rhs) const;
+            };
         }
 
 

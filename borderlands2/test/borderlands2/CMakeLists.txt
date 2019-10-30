@@ -40,4 +40,6 @@ if(WIN32)
 
 endif(WIN32)
 
-gtest_discover_tests(Borderlands2_Save_LIB_TEST)
+gtest_discover_tests(Borderlands2_Save_LIB_TEST
+        WORKING_DIRECTORY   "${CMAKE_CURRENT_SOURCE_DIR}/../../.."
+        )

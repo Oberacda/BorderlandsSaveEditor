@@ -23,4 +23,6 @@ set_target_properties(Borderlands_Common_LIB_TEST
         EXCLUDE_FROM_ALL    TRUE
         )
 
-gtest_discover_tests(Borderlands_Common_LIB_TEST)
+gtest_discover_tests(Borderlands_Common_LIB_TEST
+        WORKING_DIRECTORY   "${CMAKE_CURRENT_SOURCE_DIR}/../../.."
+        )

@@ -4,7 +4,8 @@ cmake_policy(SET CMP0087 NEW)
 set(Borderlands2_Save_LIB_HEADER_DIR ${Borderlands2_INCLUDE_DIR}/borderlands2)
 
 set(Borderlands2_Save_LIB_PUBLIC_INCLUDE_FILES
-        ${Borderlands2_Save_LIB_HEADER_DIR}/borderlands2.hpp
+        ${Borderlands2_Save_LIB_HEADER_DIR}/save_file.hpp
+        ${Borderlands2_Save_LIB_HEADER_DIR}/save_data.hpp
         ${CMAKE_CURRENT_BINARY_DIR}/bl2_save_lib_exports.hpp
         )
 
@@ -59,7 +60,8 @@ set(Borderlands2_Save_LIB_INCLUDE_FILES
 
 set(Borderlands2_Save_LIB_SOURCE_FILES
         ${Borderlands2_Save_LIB_PROTO_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/borderlands2.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/save_file.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/save_data.cpp
         )
 
 set(Borderlands2_Save_LIB_RESOURCE_FILES)

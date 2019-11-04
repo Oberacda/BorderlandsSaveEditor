@@ -3,14 +3,12 @@
 //
 
 #include <gtest/gtest.h>
-#include <borderlands2/borderlands2.hpp>
+#include <borderlands2/save_file.hpp>
 #include <google/protobuf/stubs/common.h>
 
 class Borderlands2Test : public ::testing::Test {
     public:
-
-    D4v3::Borderlands::Borderlands2::Borderlands2_Save_File save_file = D4v3::Borderlands::Borderlands2::Borderlands2_Save_File(
-            "./borderlands2/resources/76561198034853688/Save0001.sav");
+    std::unique_ptr<D4v3::Borderlands::Borderlands2::Borderlands2_Save_File> saveFilePtr;
 
     Borderlands2Test() {
     }
@@ -26,26 +24,27 @@ class Borderlands2Test : public ::testing::Test {
     void SetUp() override {
         // Code here will be called immediately after the constructor (right
         // before each test).
+        auto newSaveFilePtr = std::make_unique<D4v3::Borderlands::Borderlands2::Borderlands2_Save_File>();
+        this->saveFilePtr.swap(newSaveFilePtr);
     }
 
     void TearDown() override {
         // Code here will be called immediately after each test (right
         // before the destructor).
+        this->saveFilePtr.reset(nullptr);
     }
 };
 
 TEST_F(Borderlands2Test, VerifySaveFile) {
-    EXPECT_TRUE(save_file.verifySave());
+    EXPECT_NO_THROW(saveFilePtr->loadSaveFile("./borderlands2/resources/76561198034853688/Save0001.sav"));
+    EXPECT_TRUE(saveFilePtr->verifySave());
 }
 
 TEST_F(Borderlands2Test, InvalidPath) {
-    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::Borderlands2_Save_File("./../resources/76561198034853688/Save0001.sav"));
+    EXPECT_ANY_THROW(saveFilePtr->loadSaveFile("./../resources/76561198034853688/Save0001.sav"));
 }
 
 TEST_F(Borderlands2Test, InvalidPath_InvalidChars) {
-    EXPECT_ANY_THROW(D4v3::Borderlands::Borderlands2::Borderlands2_Save_File("..//../resources/76561198034853688/Save0001.sav"));
+    EXPECT_ANY_THROW(saveFilePtr->loadSaveFile("..//../resources/76561198034853688/Save0001.sav"));
 }
 
-TEST_F(Borderlands2Test, DISABLED_DumpJson) {
-    EXPECT_NO_THROW(save_file.dumpSave("./Save0001.dump.json"));
-}

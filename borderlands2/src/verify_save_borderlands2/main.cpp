@@ -14,7 +14,7 @@
 
 #include <cxxopts.hpp>
 
-#include <borderlands2/borderlands2.hpp>
+#include <borderlands2/save_file.hpp>
 
 /**
  * @brief Main function of the save verify tool.

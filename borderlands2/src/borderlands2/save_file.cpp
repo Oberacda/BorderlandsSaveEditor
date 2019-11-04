@@ -1,16 +1,14 @@
 /**
- * @file        borderlands2.cpp
+ * @file        save_file.cpp
  * @author      David Oberacker (david.oberacker@gmail.com)
- * @brief       Borderlands2 save management functions.
+ * @brief       Borderlands2 save file management functions.
  * @details     Implementation of functions to load, verify and dump data from and to Borderlands 2 save files.
  * @version     0.1
  * @date        2019-08-26
  *
  * @copyright   Copyright (c) 2019 David Oberacker
  */
-#include "bl2_save_lib_exports.hpp"
-#include "borderlands2/borderlands2.hpp"
-#include "borderlands2/WillowTwoPlayerSaveGame.pb.h"
+#include "borderlands2/save_file.hpp"
 
 #include <common/common.hpp>
 
@@ -19,8 +17,6 @@
 #include <openssl/sha.h>
 
 #include <minilzo-2.10/minilzo.h>
-
-#include <google/protobuf/util/json_util.h>
 
 #include <cstring>
 #include <filesystem>
@@ -71,62 +67,9 @@ namespace D4v3::Borderlands::Borderlands2 {
         }
     }
 
-
-    Borderlands2_Save_File::Borderlands2_Save_File(const std::string &path) noexcept(false)
-    {
-
-        this->playerSaveGamePtr = std::make_unique<WillowTwoPlayerSaveGame>();
-
-        loadSaveFile(path ,this->getPlayerSaveGamePtr());
-
-    }
-
-    WillowTwoPlayerSaveGame *const Borderlands2_Save_File::getPlayerSaveGamePtr() const {
-        return playerSaveGamePtr.get();
-    }
-
-
-    bool Borderlands2_Save_File::operator==(const Borderlands2_Save_File &rhs) const {
-        return playerSaveGamePtr == rhs.playerSaveGamePtr;
-    }
-
-    bool Borderlands2_Save_File::operator!=(const Borderlands2_Save_File &rhs) const {
-        return !(rhs == *this);
-    }
-
-    bool Borderlands2_Save_File::verifySave() noexcept(false){
+    bool Borderlands2_Save_File::verifySave() noexcept(false) {
         //TODO: Implement function.
         return true;
-    }
-
-    void Borderlands2_Save_File::dumpSave(const std::string &out_path) noexcept(false) {
-        auto out_save_file = std::make_unique<std::filesystem::path>(out_path);
-
-        if (std::filesystem::exists(*(out_save_file))) {
-            throw std::invalid_argument("Specified path is invalid! It does point to a valid file!");
-        }
-        if (!out_save_file->is_absolute()) {
-            try {
-                std::filesystem::path canonical_path = std::filesystem::absolute(*(out_save_file));
-                out_save_file.reset(nullptr);
-                out_save_file = std::make_unique<std::filesystem::path>(canonical_path);
-            } catch (std::filesystem::filesystem_error &ex) {
-                throw std::runtime_error(ex.what());
-            }
-        }
-
-        auto *json_string = new std::string();
-        google::protobuf::util::JsonPrintOptions print_options;
-        print_options.always_print_primitive_fields = true;
-        print_options.add_whitespace = true;
-
-        google::protobuf::util::MessageToJsonString(*(this->getPlayerSaveGamePtr()), json_string, print_options);
-
-        std::ofstream out_save_stream((*out_save_file), std::ofstream::out);
-        out_save_stream << *json_string;
-        out_save_stream.close();
-
-        delete json_string;
     }
 
     void Borderlands2_Save_File::decompress_lzo(unsigned char *compressed_data, size_t compressed_size,
@@ -261,10 +204,16 @@ namespace D4v3::Borderlands::Borderlands2 {
         return true;
     }
 
-    void Borderlands2_Save_File::loadSaveFile(const std::string &path, WillowTwoPlayerSaveGame *save_game) noexcept(false) {
+    Borderlands2_Save_File::Borderlands2_Save_File() noexcept(false) {
+        this->saveFilePathPtr = std::make_unique<std::filesystem::path>();
+        this->saveDataPtr = std::make_unique<Borderlands2_Save_Data>();
+    }
+
+    void
+    Borderlands2_Save_File::loadSaveFile(const std::string &path) noexcept(false) {
         std::ostringstream exception_message_stream;
 
-        if (save_game == nullptr) {
+        if (this->saveDataPtr == nullptr) {
             throw std::invalid_argument("The given pointer to the save game is invalid!");
         }
 
@@ -304,7 +253,6 @@ namespace D4v3::Borderlands::Borderlands2 {
         }
 
         save_file_stream.close();
-        save_file.reset(nullptr);
 
         checksum_ptr.reset(nullptr);
 
@@ -380,7 +328,9 @@ namespace D4v3::Borderlands::Borderlands2 {
         };
         inner_compressed_bytes_ptr.reset(nullptr);
 
-        if (!(save_game->ParseFromArray(inner_uncompressed_bytes_ptr.get(), inner_uncompressed_size))) {
+        auto saveFilePtr = std::make_unique<WillowTwoPlayerSaveGame>();
+
+        if (!(saveFilePtr->ParseFromArray(inner_uncompressed_bytes_ptr.get(), inner_uncompressed_size))) {
             inner_uncompressed_bytes_ptr.reset(nullptr);
 
             exception_message_stream
@@ -388,8 +338,27 @@ namespace D4v3::Borderlands::Borderlands2 {
             throw std::runtime_error(exception_message_stream.str());
         }
         inner_uncompressed_bytes_ptr.reset(nullptr);
+
+        auto newSaveDataPtr = std::make_unique<Borderlands2_Save_Data>(saveFilePtr);
+        this->saveDataPtr.swap(newSaveDataPtr);
+
+        newSaveDataPtr.reset(nullptr);
+
+        this->saveFilePathPtr.swap(save_file);
+        save_file.reset(nullptr);
+    }
+
+    bool Borderlands2_Save_File::operator==(const Borderlands2_Save_File &rhs) const {
+        return saveDataPtr == rhs.saveDataPtr &&
+               saveFilePathPtr == rhs.saveFilePathPtr;
+    }
+
+    bool Borderlands2_Save_File::operator!=(const Borderlands2_Save_File &rhs) const {
+        return !(rhs == *this);
     }
 }
+
+
 
 
 

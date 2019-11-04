@@ -41,12 +41,15 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    auto save_file = D4v3::Borderlands::Borderlands2::Borderlands2_Save_File();
+
     std::cout << "Verification started" << std::endl;
     std::string input_path;
     std::cin >> input_path;
 
     std::cout << "Verifying save file at path: " << input_path << std::endl;
-    bool result = D4v3::Borderlands::Borderlands2::verifySave(input_path);
+    save_file.loadSaveFile(input_path);
+    bool result = save_file.verifySave();
     std::cout << "Verification result: " << std::boolalpha << result << std::endl;
 
 

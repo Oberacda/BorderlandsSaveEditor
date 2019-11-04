@@ -36,7 +36,7 @@ class Borderlands2Test : public ::testing::Test {
 };
 
 TEST_F(Borderlands2Test, VerifySaveFile) {
-    EXPECT_NO_THROW(saveFilePtr->loadSaveFile("./borderlands2/resources/76561198034853688/Save0001.sav"));
+    EXPECT_NO_THROW(saveFilePtr->loadSaveFile("../borderlands2/resources/76561198034853688/Save0001.sav"));
     EXPECT_TRUE(saveFilePtr->verifySave());
 }
 
